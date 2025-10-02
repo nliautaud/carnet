@@ -80,19 +80,3 @@ h1 {
   margin: 1em 0 0.5em 0;
   font-weight: normal;
 }
-
-
-body.mode-lecture #title,
-body.mode-lecture #content {
-  pointer-events: none;
-  user-select: text;
-}
-
-body.mode-lecture #content {
-  border: none;
-}
-
-body.mode-edition #content {
-  border-left: 3px solid var(--border-color);
-  padding-left: 0.8em;
-}

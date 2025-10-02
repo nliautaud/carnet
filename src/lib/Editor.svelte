@@ -63,22 +63,21 @@
   input.title {
     width: 100%;
     margin: 1em 0;
-    padding: 0.4em;
+    padding: 0.5rem;
     font-size: 1.4em;
     font-weight: bold;
     border: none;
-    border-bottom: 1px solid var(--border-color);
     background: transparent;
     color: var(--text-color);
   }
   input.title:focus {
     outline: none;
-    border-bottom-color: var(--text-color);
   }
   #content {
-    min-height: 70vh;
+    min-height: 3em;
     font-size: 1.2em;
-    padding: 0.5em 0;
+    padding: 0.5rem;
+    margin-bottom: 20vh;
     color: var(--text-color);
   }
   #content:focus {
@@ -91,4 +90,19 @@
     font-size: 1.4em;
     color: var(--text-color);
   }
+
+#title,
+#content {
+  border-left: 3px solid transparent;
+  transition: border-color 0.2s;
+}
+:global(body.mode-lecture #title),
+:global(body.mode-lecture #content) {
+  pointer-events: none;
+  user-select: text;
+}
+:global(body.mode-edition #title),
+:global(body.mode-edition #content) {
+  border-left: 3px solid var(--border-color);
+}
 </style>

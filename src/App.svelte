@@ -95,7 +95,6 @@
 
 <style>
   main {
-    min-height: 100vh;
     padding: 2em 1.5em;
     max-width: 650px;
     margin: auto;
