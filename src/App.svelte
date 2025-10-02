@@ -11,6 +11,8 @@
   let mode = "mode-lecture"; // or 'mode-edition'
   let theme = "auto";
   let previewMode = false;
+  let selectMode = false;
+  let selected = new Set();
 
   // Helper to decode base64url
   function decodeBase64Url(str) {
@@ -176,6 +178,34 @@
     document.body.dataset.theme = t;
     localStorage.setItem("theme", t);
   }
+
+  function handleToggleSelectMode() {
+    selectMode = !selectMode;
+    if (!selectMode) selected = new Set();
+  }
+
+  function handleSelectItem(i) {
+    if (selected.has(i)) {
+      selected.delete(i);
+    } else {
+      selected.add(i);
+    }
+    selected = new Set(selected); // trigger reactivity
+  }
+
+  function handleDeleteSelection() {
+    if (selected.size > 0) {
+      texts = texts.filter((_, i) => !selected.has(i));
+      localStorage.setItem("texts", JSON.stringify(texts));
+      selected = new Set();
+      selectMode = false;
+    }
+  }
+
+  function handleClosePanel() {
+    selectMode = false;
+    setMode("mode-lecture");
+  }
 </script>
 
 <main>
@@ -203,7 +233,8 @@
       on:savePreviewText={savePreviewText}
     />
   {:else}
-    <Menu {texts} {sharedTexts} onOpenEditor={openEditor} onOpenSharedPreview={openSharedPreview} onDeleteSharedText={deleteSharedText} />
+    <Menu {texts} {sharedTexts} onOpenEditor={openEditor} onOpenSharedPreview={openSharedPreview} onDeleteSharedText={deleteSharedText}
+      selectMode={selectMode} selected={selected} onToggleSelectMode={handleToggleSelectMode} onSelectItem={handleSelectItem} onDeleteSelection={handleDeleteSelection} />
   {/if}
   <ActionPanel
     texts={previewMode && sharedTexts.length ? sharedTexts : texts}
@@ -211,15 +242,16 @@
     {currentIndex}
     {theme}
     onNewText={newText}
-    onToggleMode={() =>
-      setMode(mode === "mode-edition" ? "mode-lecture" : "mode-edition")}
+    onToggleMode={() => setMode(mode === "mode-edition" ? "mode-lecture" : "mode-edition")}
     onToggleTheme={() => {
       const themes = ["auto", "light", "dark"];
       const idx = (themes.indexOf(theme) + 1) % themes.length;
       setTheme(themes[idx]);
     }}
-    onClosePanel={() => setMode("mode-lecture")}
+    onClosePanel={handleClosePanel}
     showModeToggle={!previewMode}
+    selectMode={selectMode}
+    onToggleSelectMode={handleToggleSelectMode}
   />
 </main>
 

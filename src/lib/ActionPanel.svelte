@@ -7,8 +7,10 @@
   export let onToggleMode;
   export let onToggleTheme;
   export let onClosePanel;
-  export let previewMode = false;
+  export let previewMode = false; // (can be removed if not needed)
   export let showModeToggle = true;
+  export let selectMode = false;
+  export let onToggleSelectMode;
   const themeIcons = ["🌗", "☀️", "🌙"];
   const themes = ["auto", "light", "dark"];
   $: themeIcon = themeIcons[themes.indexOf(theme)] ?? "🌗";
@@ -27,9 +29,13 @@
 <div id="action-panel" class:is-open={isOpen}>
   <div class="actions" class:visible={isOpen}>
     {#if currentIndex === null}
-      <button id="new-text-btn" on:click={onNewText} aria-label="New text"
-        >＋</button
-      >
+      <button id="new-text-btn" on:click={onNewText} aria-label="New text">＋</button>
+      <button id="select-mode-btn" on:click={onToggleSelectMode} aria-label="Toggle select mode" aria-pressed={selectMode} class:active={selectMode}>
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="vertical-align:middle;">
+          <rect x="3" y="3" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2" fill={selectMode ? 'currentColor' : 'none'} />
+          <polyline points="7,12 10,15 15,8" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:{selectMode ? 1 : 0};transition:opacity 0.15s;" />
+        </svg>
+      </button>
     {/if}
     {#if currentIndex !== null && showModeToggle}
       <button

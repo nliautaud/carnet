@@ -4,16 +4,36 @@
   export let onOpenEditor;
   export let onOpenSharedPreview;
   export let onDeleteSharedText;
+  export let selectMode = false;
+  export let selected = new Set();
+  export let onToggleSelectMode;
+  export let onSelectItem;
+  export let onDeleteSelection;
 </script>
 
 <h1>Mes Textes</h1>
-<ul>
+{#if selectMode}
+  <div class="selection-section">
+    {#if selected.size === 0}
+      <span class="items-selected">no item selected</span>
+    {:else}
+      <span class="items-selected">{selected.size} items selected</span>
+      <button class="delete-selection" on:click={onDeleteSelection}>delete selection</button>
+    {/if}
+  </div>
+{/if}
+<ul class="text-list">
   {#each texts as t, i}
     <li>
       <button
         type="button"
-        on:click={() => onOpenEditor(i)}
-        class={t.title ? "" : "untitled"}>{t.title || "Sans titre"}</button>
+        on:click={() => !selectMode && onOpenEditor(i)}
+        class={t.title ? "" : "untitled"}
+        disabled={selectMode}
+      >{t.title || "Sans titre"}</button>
+      {#if selectMode}
+        <input type="checkbox" checked={selected.has(i)} on:change={() => onSelectItem(i)} class="entry-checkbox" aria-label="Select text" />
+      {/if}
     </li>
   {/each}
 </ul>
@@ -34,7 +54,8 @@
 <style>
   h1,
   ul {
-    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-family: var(--font-serif);
+    font-weight: 500;
   }
 
   ul {
@@ -45,8 +66,10 @@
     margin: 0.8em 0;
     width: 100%;
     display: flex;
+    align-items: center;
+    gap: 0.5em;
   }
-  button {
+  ul button {
     flex: 1;
     text-align: left;
     display: block;
@@ -116,5 +139,36 @@
   .delete-shared:hover {
     background: var(--hover-bg);
     color: var(--text-color);
+  }
+  .selection-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 0.5em;
+    font-size: 0.95em;
+    color: var(--text-muted-color);
+  }
+  .items-selected {
+    flex: 1;
+  }
+  .delete-selection {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 1em;
+    padding: 0.3em 0.8em;
+    cursor: pointer;
+    font-size: 0.95em;
+    margin-left: 0.5em;
+  }
+  .delete-selection:hover {
+    background: #c0392b;
+  }
+  .entry-checkbox {
+    margin-right: 0.7em;
+    accent-color: var(--text-color);
+    width: 1.1em;
+    height: 1.1em;
+    vertical-align: middle;
   }
 </style>

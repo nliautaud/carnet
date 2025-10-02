@@ -71,11 +71,13 @@ body {
   background: var(--bg-color);
   color: var(--text-color);
   transition: background 0.3s, color 0.3s;
-}
-button,
-input,
-body {
   font-family: var(--font-system);
+}
+
+button,
+input {
+  font-family: inherit;
+  font-weight: inherit;
 }
 
 h1 {
