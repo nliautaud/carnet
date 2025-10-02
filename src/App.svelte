@@ -73,8 +73,8 @@
       {texts}
       {currentIndex}
       {mode}
-      on:save={save}
-      on:showMenu={showMenu}
+      onSave={save}
+      onClose={showMenu}
       on:setMode={(e) => setMode(e.detail)}
     />
   {/if}

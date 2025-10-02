@@ -2,8 +2,9 @@
   export let texts = [];
   export let currentIndex = undefined;
   export let mode = "mode-lecture";
-  import { createEventDispatcher, onMount } from "svelte";
-  const dispatch = createEventDispatcher();
+  import { onMount } from "svelte";
+  export let onSave;
+  export let onClose;
   let title = "";
   let content = "";
   let titleInput;
@@ -16,21 +17,18 @@
 
   function handleTitleInput(e) {
     title = e.target.value;
-    dispatch("save");
+    onSave?.();
   }
   function handleContentInput(e) {
     content = e.target.innerHTML;
-    dispatch("save");
-  }
-  function close() {
-    dispatch("showMenu");
+    onSave?.();
   }
   onMount(() => {
     if (mode === "mode-edition" && titleInput) titleInput.focus();
   });
 </script>
 
-<button class="close" type="button" on:click={close} aria-label="Fermer"
+<button class="close" type="button" on:click={onClose} aria-label="Fermer"
   >✖</button
 >
 <input
