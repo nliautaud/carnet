@@ -6,6 +6,7 @@
   import Menu from "./lib/Menu.svelte";
 
   let texts = [];
+  let sharedTexts = [];
   let currentIndex = null;
   let mode = "mode-lecture"; // or 'mode-edition'
   let theme = "auto";
@@ -22,19 +23,18 @@
   onMount(() => {
     const params = new URLSearchParams(window.location.search);
     const share = params.get("share");
+    const stored = localStorage.getItem("texts");
+    texts = stored ? JSON.parse(stored) : [];
     if (share) {
       try {
         const data = JSON.parse(decodeBase64Url(share));
-        texts = [data];
+        sharedTexts = [data];
         currentIndex = 0;
         mode = "mode-lecture";
         previewMode = true;
       } catch (e) {
         // ignore
       }
-    } else {
-      const stored = localStorage.getItem("texts");
-      texts = stored ? JSON.parse(stored) : [];
     }
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) theme = storedTheme;
@@ -56,18 +56,47 @@
     }
   }
 
-  function savePreviewText() {
-    if (previewMode && typeof currentIndex === "number") {
-      const toSave = texts[currentIndex];
-      // Save to localStorage
-      const stored = localStorage.getItem("texts");
-      const all = stored ? JSON.parse(stored) : [];
-      all.push(toSave);
-      localStorage.setItem("texts", JSON.stringify(all));
-      // Open the saved text in normal mode
-      texts = all;
-      currentIndex = all.length - 1;
+  // Utility: find index of text with same title (case-insensitive, trimmed)
+  function findTextIndexByTitle(title) {
+    return texts.findIndex(
+      (t) => t.title?.trim().toLowerCase() === title?.trim().toLowerCase()
+    );
+  }
+
+  // Save preview: support override or save as new
+  function savePreviewText({ detail } = {}) {
+    if (previewMode && sharedTexts.length && typeof currentIndex === "number") {
+      const toSave = sharedTexts[currentIndex];
+      let all = [...texts];
+      const existingIdx = findTextIndexByTitle(toSave.title);
+      if (detail === 'override' && existingIdx !== -1) {
+        // Override existing
+        all[existingIdx] = toSave;
+        localStorage.setItem("texts", JSON.stringify(all));
+        texts = all;
+        currentIndex = existingIdx;
+      } else if (detail === 'new' && existingIdx !== -1) {
+        // Save as new with suffix
+        let base = toSave.title || "Sans titre";
+        let n = 2;
+        let newTitle = base + " (2)";
+        while (findTextIndexByTitle(newTitle) !== -1) {
+          n++;
+          newTitle = `${base} (${n})`;
+        }
+        all.push({ ...toSave, title: newTitle });
+        localStorage.setItem("texts", JSON.stringify(all));
+        texts = all;
+        currentIndex = all.length - 1;
+      } else {
+        // Normal save
+        all.push(toSave);
+        localStorage.setItem("texts", JSON.stringify(all));
+        texts = all;
+        currentIndex = all.length - 1;
+      }
       previewMode = false;
+      sharedTexts = [];
       // Remove ?share param from URL
       const url = new URL(window.location.href);
       url.searchParams.delete("share");
@@ -79,6 +108,7 @@
     currentIndex = null;
     mode = "mode-lecture";
     previewMode = false;
+    sharedTexts = [];
     // Remove ?share param from URL
     const url = new URL(window.location.href);
     url.searchParams.delete("share");
@@ -112,12 +142,24 @@
 </script>
 
 <main>
-  {#if currentIndex !== null}
+  {#if previewMode && sharedTexts.length}
+    <Editor
+      texts={sharedTexts}
+      {currentIndex}
+      {mode}
+      previewMode={previewMode}
+      localTexts={texts}
+      onSave={save}
+      onClose={showMenu}
+      on:setMode={(e) => setMode(e.detail)}
+      on:savePreviewText={savePreviewText}
+    />
+  {:else if currentIndex !== null}
     <Editor
       {texts}
       {currentIndex}
       {mode}
-      previewMode={previewMode}
+      previewMode={false}
       onSave={save}
       onClose={showMenu}
       on:setMode={(e) => setMode(e.detail)}
