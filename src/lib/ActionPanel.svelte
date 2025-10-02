@@ -8,16 +8,28 @@
   const themeIcons = ["🌗", "☀️", "🌙"];
   const themes = ["auto", "light", "dark"];
   $: themeIcon = themeIcons[themes.indexOf(theme)] ?? "🌗";
+  let isOpen = false;
 </script>
 
-<div id="action-panel">
-  <button id="new-text-btn" on:click={onNewText}>＋</button>
-  {#if currentIndex !== null}
-    <button id="toggle-mode" on:click={onToggleMode}
-      >{mode === "mode-edition" ? "👁" : "✏️"}</button
-    >
-  {/if}
-  <button id="toggle-theme" on:click={onToggleTheme}>{themeIcon}</button>
+<div id="action-panel" class:is-open={isOpen}>
+  <div class="actions" class:visible={isOpen}>
+    {#if currentIndex === null}
+    <button id="new-text-btn" on:click={onNewText} aria-label="New text">＋</button>
+    {/if}
+    {#if currentIndex !== null}
+      <button id="toggle-mode" on:click={onToggleMode} aria-label={mode === "mode-edition" ? "Switch to view mode" : "Switch to edit mode"}>
+        {mode === "mode-edition" ? "👁" : "✏️"}
+      </button>
+    {/if}
+    <button id="toggle-theme" on:click={onToggleTheme} aria-label="Toggle theme">{themeIcon}</button>
+  </div>
+  <button id="toggle-panel" on:click={() => (isOpen = !isOpen)} aria-label={isOpen ? "Close action panel" : "Open action panel"}>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle">
+      <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
+      <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor"/>
+      <rect x="4" y="15" width="16" height="2" rx="1" fill="currentColor"/>
+    </svg>
+  </button>
 </div>
 
 <style>
@@ -27,18 +39,92 @@
     right: 20px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     border-radius: 50px;
-    border: 1px solid var(--border-color);
+    z-index: 1000;
+    transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+  }
+  #action-panel:not(.is-open) {
+    background: none;
+    box-shadow: none;
+  }
+  #action-panel.is-open {
     background: var(--panel-bg);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+  }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0;
+    transition: opacity 0.2s, max-height 0.2s;
+    overflow: hidden;
+  }
+  .actions.visible {
+    opacity: 1;
+    pointer-events: auto;
+    max-height: none;
+  }
+  .actions.visible button {
+    animation: bounce-in 0.35s cubic-bezier(.47,1.64,.41,.8) both;
+  }
+  button:active {
+    animation: click-bounce 0.32s cubic-bezier(.47,1.64,.41,.8);
+  }
+  .actions.visible button:nth-child(2) {
+    animation-delay: 0.07s;
+  }
+  .actions.visible button:nth-child(1) {
+    animation-delay: 0.14s;
+  }
+  @keyframes bounce-in {
+    0% {
+      opacity: 0;
+      transform: translateY(10px) scaleY(1.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
+    }
+  }
+  @keyframes click-bounce {
+    0% { transform: scale(1); }
+    20% { transform: scale(1.2, 0.92); }
+    40% { transform: scale(0.96, 1.08); }
+    60% { transform: scale(1.04, 0.98); }
+    80% { transform: scale(0.98, 1.02); }
+    100% { transform: scale(1); }
   }
   #action-panel button {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
     background: none;
     border: none;
-    padding: 0.6em;
     cursor: pointer;
     font-size: 1.4em;
     color: var(--text-color);
+    transition: background 0.2s, border 0.2s;
+  }
+  #action-panel.is-open button {
+    background: none;
+    border: none;
+  }
+  #action-panel:not(.is-open) button {
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  button:last-child {
+    border-radius: 0 0 50px 50px;
+  }
+  button:first-child {
+    border-radius: 50px 50px 0 0;
   }
 </style>
