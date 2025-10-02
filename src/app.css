@@ -1,49 +1,14 @@
-/* Adelphe font faces */
 @font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalRegular.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalRegular.woff') format('woff');
-  font-weight: 400;
+  font-family: 'Newsreader';
+  src: url('/static/fonts/newsreader/Newsreader-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 1 1000;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalItalic.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalItalic.woff') format('woff');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalSemiBold.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalSemiBold.woff') format('woff');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalSemiBoldItalic.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalSemiBoldItalic.woff') format('woff');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalBold.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalBold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Adelphe Germinal';
-  src: url('/static/adelphe/webfonts/Adelphe-GerminalBoldItalic.woff2') format('woff2'),
-       url('/static/adelphe/webfonts/Adelphe-GerminalBoldItalic.woff') format('woff');
-  font-weight: 700;
+  font-family: 'Newsreader';
+  src: url('/static/fonts/newsreader/Newsreader-Italic-VariableFont_opsz,wght.ttf') format('truetype');
+  font-weight: 1 1000;
   font-style: italic;
   font-display: swap;
 }
@@ -104,9 +69,10 @@ body {
   color: var(--text-color);
   transition: background 0.3s, color 0.3s;
 }
+button,
 input,
 body {
-  font-family: 'Adelphe Germinal', Georgia, 'Times New Roman', serif;
+  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
 }
 
 h1 {

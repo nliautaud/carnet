@@ -23,8 +23,12 @@
   }
   li {
     margin: 0.8em 0;
+    width: 100%;
+    display: flex;
   }
   button {
+    flex: 1;
+    text-align: left;
     display: block;
     padding: 0.6em 1em;
     border-radius: 6px;
@@ -33,7 +37,7 @@
     border: 1px solid var(--border-color);
     transition: background 0.2s;
     background: var(--bg-color);
-    font-weight: 500;
+    font-size: 1em;
   }
   button.untitled {
     font-style: italic;
