@@ -1,0 +1,132 @@
+/* Adelphe font faces */
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalRegular.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalItalic.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalItalic.woff') format('woff');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalSemiBold.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalSemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalSemiBoldItalic.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalSemiBoldItalic.woff') format('woff');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalBold.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Adelphe Germinal';
+  src: url('/static/adelphe/webfonts/Adelphe-GerminalBoldItalic.woff2') format('woff2'),
+       url('/static/adelphe/webfonts/Adelphe-GerminalBoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --bg-color: #fff;
+  --text-color: #111;
+  --text-muted-color: #666;
+  --border-color: #ccc;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --panel-bg: #fff;
+}
+
+body[data-theme="dark"] {
+  --bg-color: #111;
+  --text-color: #eee;
+  --text-muted-color: #999;
+  --border-color: #555;
+  --hover-bg: rgba(255, 255, 255, 0.05);
+  --panel-bg: #222;
+}
+
+body[data-theme="light"] {
+  --bg-color: #fff;
+  --text-color: #111;
+  --text-muted-color: #666;
+  --border-color: #ccc;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --panel-bg: #fff;
+}
+
+body[data-theme="auto"] {
+  --bg-color: #fff;
+  --text-color: #111;
+  --text-muted-color: #666;
+  --border-color: #ccc;
+  --hover-bg: rgba(0, 0, 0, 0.05);
+  --panel-bg: #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  body[data-theme="auto"] {
+    --bg-color: #111;
+    --text-color: #eee;
+    --text-muted-color: #999;
+    --border-color: #555;
+    --hover-bg: rgba(255, 255, 255, 0.05);
+    --panel-bg: #222;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: background 0.3s, color 0.3s;
+}
+input,
+body {
+  font-family: 'Adelphe Germinal', Georgia, 'Times New Roman', serif;
+}
+
+h1 {
+  font-size: 1.6em;
+  margin: 1em 0 0.5em 0;
+  font-weight: normal;
+}
+
+
+body.mode-lecture #title,
+body.mode-lecture #content {
+  pointer-events: none;
+  user-select: text;
+}
+
+body.mode-lecture #content {
+  border: none;
+}
+
+body.mode-edition #content {
+  border-left: 3px solid var(--border-color);
+  padding-left: 0.8em;
+}
