@@ -1,98 +1,16 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>minitms</title>
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
-<meta name="theme-color" content="#ffffff">
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>minitms</title>
 </head>
-<body class="mode-lecture" data-theme="auto">
-<div id="menu"></div>
-<div id="editor" hidden></div>
 
-<!-- Action panel -->
-<div id="action-panel">
-  <button id="new-text-btn">＋</button>
-  <button id="toggle-mode" hidden>✏️</button>
-  <button id="toggle-theme">🌗</button>
-</div>
-
-<script>
-// --- Data
-let texts = JSON.parse(localStorage.getItem("texts")||"[]");
-let currentIndex=null;
-
-// --- Save
-function save(){localStorage.setItem("texts",JSON.stringify(texts));}
-
-// --- Menu
-function showMenu(){
-  document.getElementById("menu").hidden=false;
-  document.getElementById("editor").hidden=true;
-  document.getElementById("toggle-mode").hidden=true; // masquer toggle mode sur accueil
-  document.getElementById("menu").innerHTML=`
-    <h1>Mes Textes</h1>
-    <ul>${texts.map((t,i)=>`<li><a href="#" onclick="openEditor(${i})">${t.title||"(Sans titre)"}</a></li>`).join("")}</ul>`;
-}
-
-// --- New text
-function newText(){
-  texts.push({title:"",content:""});
-  save();
-  openEditor(texts.length-1);
-  setMode("mode-edition");
-}
-
-// --- Open editor
-function openEditor(i){
-  currentIndex=i;
-  document.getElementById("menu").hidden=true;
-  document.getElementById("editor").hidden=false;
-  document.getElementById("toggle-mode").hidden=false; // afficher toggle mode en page texte
-  document.getElementById("editor").innerHTML=`
-    <div class="close" onclick="showMenu()">✖</div>
-    <input id="title" class="title" placeholder="Titre..." value="${texts[i].title}">
-    <div id="content">${texts[i].content}</div>
-  `;
-  const titleEl=document.getElementById("title");
-  const contentEl=document.getElementById("content");
-  titleEl.addEventListener("input",()=>{if(document.body.classList.contains("mode-edition")){texts[i].title=titleEl.value;save();}});
-  contentEl.addEventListener("input",()=>{if(document.body.classList.contains("mode-edition")){texts[i].content=contentEl.innerHTML;save();}});
-}
-
-// --- Mode toggle
-function setMode(mode){
-  if(mode){document.body.classList.remove("mode-lecture","mode-edition");document.body.classList.add(mode);}
-  const isEdition=document.body.classList.contains("mode-edition");
-  document.getElementById("toggle-mode").textContent=isEdition?"👁":"✏️";
-  const contentEl=document.getElementById("content");
-  const titleEl=document.getElementById("title");
-  if(contentEl) contentEl.contentEditable=isEdition;
-  if(titleEl) titleEl.readOnly=!isEdition;
-}
-document.getElementById("toggle-mode").addEventListener("click",()=>{setMode(document.body.classList.contains("mode-edition")?"mode-lecture":"mode-edition");});
-
-// --- Theme toggle
-const themes=["auto","light","dark"];
-const themeIcons=["🌗","☀️","🌙"];
-let currentThemeIndex=0;
-document.getElementById("toggle-theme").textContent=themeIcons[currentThemeIndex];
-document.getElementById("toggle-theme").addEventListener("click",()=>{
-  currentThemeIndex=(currentThemeIndex+1)%themes.length;
-  document.body.dataset.theme=themes[currentThemeIndex];
-  document.getElementById("toggle-theme").textContent=themeIcons[currentThemeIndex];
-});
-
-// --- Nouveau bouton dans panel
-document.getElementById("new-text-btn").addEventListener("click", newText);
-
-// --- Service Worker
-if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js");}
-
-// --- Initial render
-showMenu();
-</script>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.js"></script>
 </body>
+
 </html>
