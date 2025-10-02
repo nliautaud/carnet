@@ -19,19 +19,35 @@
     return decodeURIComponent(escape(atob(str)));
   }
 
+  function addSharedText(text) {
+    sharedTexts = [...sharedTexts, text];
+    localStorage.setItem("sharedTexts", JSON.stringify(sharedTexts));
+  }
+
+  function removeSharedText(i) {
+    sharedTexts = sharedTexts.slice(0, i).concat(sharedTexts.slice(i + 1));
+    localStorage.setItem("sharedTexts", JSON.stringify(sharedTexts));
+  }
+
   // Load from localStorage or from share param
   onMount(() => {
     const params = new URLSearchParams(window.location.search);
     const share = params.get("share");
     const stored = localStorage.getItem("texts");
     texts = stored ? JSON.parse(stored) : [];
+    const storedShared = localStorage.getItem("sharedTexts");
+    sharedTexts = storedShared ? JSON.parse(storedShared) : [];
     if (share) {
       try {
         const data = JSON.parse(decodeBase64Url(share));
-        sharedTexts = [data];
-        currentIndex = 0;
+        addSharedText(data);
+        currentIndex = sharedTexts.length - 1;
         mode = "mode-lecture";
         previewMode = true;
+        // Remove ?share param from URL
+        const url = new URL(window.location.href);
+        url.searchParams.delete("share");
+        window.history.replaceState({}, document.title, url.pathname + url.search);
       } catch (e) {
         // ignore
       }
@@ -64,19 +80,19 @@
   }
 
   // Save preview: support override or save as new
-  function savePreviewText({ detail } = {}) {
+  function savePreviewText(event) {
+    const detail = event?.detail;
     if (previewMode && sharedTexts.length && typeof currentIndex === "number") {
       const toSave = sharedTexts[currentIndex];
       let all = [...texts];
       const existingIdx = findTextIndexByTitle(toSave.title);
+      let newCurrentIndex;
       if (detail === 'override' && existingIdx !== -1) {
-        // Override existing
         all[existingIdx] = toSave;
         localStorage.setItem("texts", JSON.stringify(all));
         texts = all;
-        currentIndex = existingIdx;
+        newCurrentIndex = existingIdx;
       } else if (detail === 'new' && existingIdx !== -1) {
-        // Save as new with suffix
         let base = toSave.title || "Sans titre";
         let n = 2;
         let newTitle = base + " (2)";
@@ -87,20 +103,23 @@
         all.push({ ...toSave, title: newTitle });
         localStorage.setItem("texts", JSON.stringify(all));
         texts = all;
-        currentIndex = all.length - 1;
+        newCurrentIndex = all.length - 1;
       } else {
-        // Normal save
         all.push(toSave);
         localStorage.setItem("texts", JSON.stringify(all));
         texts = all;
-        currentIndex = all.length - 1;
+        newCurrentIndex = all.length - 1;
       }
+      // Remove the shared text after saving (reactively)
+      sharedTexts = sharedTexts.filter((_, i) => i !== currentIndex);
+      localStorage.setItem("sharedTexts", JSON.stringify(sharedTexts));
+      // Show the saved text in the editor
+      currentIndex = newCurrentIndex;
       previewMode = false;
-      sharedTexts = [];
-      // Remove ?share param from URL
-      const url = new URL(window.location.href);
-      url.searchParams.delete("share");
-      window.history.replaceState({}, document.title, url.pathname + url.search);
+      // Remove ?share param from URL (avoid redeclaration)
+      let url2 = new URL(window.location.href);
+      url2.searchParams.delete("share");
+      window.history.replaceState({}, document.title, url2.pathname + url2.search);
     }
   }
 
@@ -108,7 +127,9 @@
     currentIndex = null;
     mode = "mode-lecture";
     previewMode = false;
-    sharedTexts = [];
+    // Re-read sharedTexts from localStorage to ensure reactivity after preview
+    const storedShared = localStorage.getItem("sharedTexts");
+    sharedTexts = storedShared ? JSON.parse(storedShared) : [];
     // Remove ?share param from URL
     const url = new URL(window.location.href);
     url.searchParams.delete("share");
@@ -127,6 +148,22 @@
     currentIndex = i;
     mode = "mode-lecture";
     document.body.className = mode;
+  }
+
+  function openSharedPreview(i) {
+    currentIndex = i;
+    mode = "mode-lecture";
+    previewMode = true;
+  }
+
+  function deleteSharedText(i) {
+    removeSharedText(i);
+    // If deleting the currently previewed shared text, return to menu
+    if (previewMode && currentIndex === i) {
+      currentIndex = null;
+      previewMode = false;
+      mode = "mode-lecture";
+    }
   }
 
   function setMode(m) {
@@ -166,10 +203,10 @@
       on:savePreviewText={savePreviewText}
     />
   {:else}
-    <Menu {texts} onOpenEditor={openEditor} />
+    <Menu {texts} {sharedTexts} onOpenEditor={openEditor} onOpenSharedPreview={openSharedPreview} onDeleteSharedText={deleteSharedText} />
   {/if}
   <ActionPanel
-    {texts}
+    texts={previewMode && sharedTexts.length ? sharedTexts : texts}
     {mode}
     {currentIndex}
     {theme}
@@ -182,6 +219,7 @@
       setTheme(themes[idx]);
     }}
     onClosePanel={() => setMode("mode-lecture")}
+    showModeToggle={!previewMode}
   />
 </main>
 

@@ -7,6 +7,8 @@
   export let onToggleMode;
   export let onToggleTheme;
   export let onClosePanel;
+  export let previewMode = false;
+  export let showModeToggle = true;
   const themeIcons = ["🌗", "☀️", "🌙"];
   const themes = ["auto", "light", "dark"];
   $: themeIcon = themeIcons[themes.indexOf(theme)] ?? "🌗";
@@ -29,7 +31,7 @@
         >＋</button
       >
     {/if}
-    {#if currentIndex !== null}
+    {#if currentIndex !== null && showModeToggle}
       <button
         id="toggle-mode"
         on:click={onToggleMode}
@@ -39,6 +41,8 @@
       >
         {mode === "mode-edition" ? "👁" : "✏️"}
       </button>
+    {/if}
+    {#if currentIndex !== null}
       <ShareButton
         title={texts[currentIndex || 0]?.title}
         content={texts[currentIndex || 0]?.content}
