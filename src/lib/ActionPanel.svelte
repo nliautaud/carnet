@@ -1,4 +1,5 @@
 <script>
+  export let texts = [];
   export let mode = "mode-lecture";
   export let currentIndex = null;
   export let theme = "auto";
@@ -17,25 +18,52 @@
       onClosePanel?.();
     }
   }
+
+  import ShareButton from "./ShareButton.svelte";
 </script>
 
 <div id="action-panel" class:is-open={isOpen}>
   <div class="actions" class:visible={isOpen}>
     {#if currentIndex === null}
-    <button id="new-text-btn" on:click={onNewText} aria-label="New text">＋</button>
+      <button id="new-text-btn" on:click={onNewText} aria-label="New text"
+        >＋</button
+      >
     {/if}
     {#if currentIndex !== null}
-      <button id="toggle-mode" on:click={onToggleMode} aria-label={mode === "mode-edition" ? "Switch to view mode" : "Switch to edit mode"}>
+      <button
+        id="toggle-mode"
+        on:click={onToggleMode}
+        aria-label={mode === "mode-edition"
+          ? "Switch to view mode"
+          : "Switch to edit mode"}
+      >
         {mode === "mode-edition" ? "👁" : "✏️"}
       </button>
+      <ShareButton
+        title={texts[currentIndex || 0]?.title}
+        content={texts[currentIndex || 0]?.content}
+      />
     {/if}
-    <button id="toggle-theme" on:click={onToggleTheme} aria-label="Toggle theme">{themeIcon}</button>
+    <button id="toggle-theme" on:click={onToggleTheme} aria-label="Toggle theme"
+      >{themeIcon}</button
+    >
   </div>
-  <button id="toggle-panel" on:click={togglePanel} aria-label={isOpen ? "Close action panel" : "Open action panel"}>
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle">
-      <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
-      <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor"/>
-      <rect x="4" y="15" width="16" height="2" rx="1" fill="currentColor"/>
+  <button
+    id="toggle-panel"
+    on:click={togglePanel}
+    aria-label={isOpen ? "Close action panel" : "Open action panel"}
+  >
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style="vertical-align:middle"
+    >
+      <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor" />
+      <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor" />
+      <rect x="4" y="15" width="16" height="2" rx="1" fill="currentColor" />
     </svg>
   </button>
 </div>
@@ -50,7 +78,10 @@
     align-items: center;
     border-radius: 50px;
     z-index: 1000;
-    transition: background 0.2s, border 0.2s, box-shadow 0.2s;
+    transition:
+      background 0.2s,
+      border 0.2s,
+      box-shadow 0.2s;
     overflow: hidden;
   }
   #action-panel:not(.is-open) {
@@ -68,7 +99,9 @@
     opacity: 0;
     pointer-events: none;
     max-height: 0;
-    transition: opacity 0.2s, max-height 0.2s;
+    transition:
+      opacity 0.2s,
+      max-height 0.2s;
     overflow: hidden;
   }
   .actions.visible {
@@ -76,17 +109,52 @@
     pointer-events: auto;
     max-height: none;
   }
-  .actions.visible button {
-    animation: bounce-in 0.35s cubic-bezier(.47,1.64,.41,.8) both;
+  :global(#action-panel button) {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.4em;
+    color: var(--text-color);
+    transition:
+      background 0.2s,
+      border 0.2s;
   }
-  button:active {
-    animation: click-bounce 0.32s cubic-bezier(.47,1.64,.41,.8);
+  :global(#action-panel.is-open button) {
+    background: none;
+    border: none;
   }
-  .actions.visible button:nth-child(2) {
-    animation-delay: 0.07s;
+  :global(#action-panel:not(.is-open) button) {
+    background: none;
+    border: none;
+    box-shadow: none;
   }
-  .actions.visible button:nth-child(1) {
-    animation-delay: 0.14s;
+  :global(#action-panel button:last-child) {
+    border-radius: 0 0 50px 50px;
+  }
+  :global(#action-panel button:first-child) {
+    border-radius: 50px 50px 0 0;
+  }
+  :global(#action-panel button:active) {
+    animation: click-bounce 0.32s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+  }
+  :global(#action-panel .actions.visible button) {
+    animation: bounce-in 0.35s cubic-bezier(0.47, 1.64, 0.41, 0.8) both;
+    --delay: 0.08s;
+  }
+  :global(#action-panel .actions.visible button:nth-child(3)) {
+    animation-delay: 0;
+  }
+  :global(#action-panel .actions.visible button:nth-child(2)) {
+    animation-delay: calc(var(--delay) * 1);
+  }
+  :global(#action-panel .actions.visible button:nth-child(1)) {
+    animation-delay: calc(var(--delay) * 2);
   }
   @keyframes bounce-in {
     0% {
@@ -99,40 +167,23 @@
     }
   }
   @keyframes click-bounce {
-    0% { transform: scale(1); }
-    20% { transform: scale(1.2, 0.92); }
-    40% { transform: scale(0.96, 1.08); }
-    60% { transform: scale(1.04, 0.98); }
-    80% { transform: scale(0.98, 1.02); }
-    100% { transform: scale(1); }
-  }
-  #action-panel button {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.4em;
-    color: var(--text-color);
-    transition: background 0.2s, border 0.2s;
-  }
-  #action-panel.is-open button {
-    background: none;
-    border: none;
-  }
-  #action-panel:not(.is-open) button {
-    background: none;
-    border: none;
-    box-shadow: none;
-  }
-  button:last-child {
-    border-radius: 0 0 50px 50px;
-  }
-  button:first-child {
-    border-radius: 50px 50px 0 0;
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.2, 0.92);
+    }
+    40% {
+      transform: scale(0.96, 1.08);
+    }
+    60% {
+      transform: scale(1.04, 0.98);
+    }
+    80% {
+      transform: scale(0.98, 1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 </style>

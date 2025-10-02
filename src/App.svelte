@@ -9,11 +9,33 @@
   let currentIndex = null;
   let mode = "mode-lecture"; // or 'mode-edition'
   let theme = "auto";
+  let previewMode = false;
 
-  // Load from localStorage
+  // Helper to decode base64url
+  function decodeBase64Url(str) {
+    str = str.replace(/-/g, "+").replace(/_/g, "/");
+    while (str.length % 4) str += "=";
+    return decodeURIComponent(escape(atob(str)));
+  }
+
+  // Load from localStorage or from share param
   onMount(() => {
-    const stored = localStorage.getItem("texts");
-    texts = stored ? JSON.parse(stored) : [];
+    const params = new URLSearchParams(window.location.search);
+    const share = params.get("share");
+    if (share) {
+      try {
+        const data = JSON.parse(decodeBase64Url(share));
+        texts = [data];
+        currentIndex = 0;
+        mode = "mode-lecture";
+        previewMode = true;
+      } catch (e) {
+        // ignore
+      }
+    } else {
+      const stored = localStorage.getItem("texts");
+      texts = stored ? JSON.parse(stored) : [];
+    }
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) theme = storedTheme;
     document.body.dataset.theme = theme;
@@ -34,9 +56,33 @@
     }
   }
 
+  function savePreviewText() {
+    if (previewMode && typeof currentIndex === "number") {
+      const toSave = texts[currentIndex];
+      // Save to localStorage
+      const stored = localStorage.getItem("texts");
+      const all = stored ? JSON.parse(stored) : [];
+      all.push(toSave);
+      localStorage.setItem("texts", JSON.stringify(all));
+      // Open the saved text in normal mode
+      texts = all;
+      currentIndex = all.length - 1;
+      previewMode = false;
+      // Remove ?share param from URL
+      const url = new URL(window.location.href);
+      url.searchParams.delete("share");
+      window.history.replaceState({}, document.title, url.pathname + url.search);
+    }
+  }
+
   function showMenu() {
     currentIndex = null;
     mode = "mode-lecture";
+    previewMode = false;
+    // Remove ?share param from URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete("share");
+    window.history.replaceState({}, document.title, url.pathname + url.search);
     document.body.className = mode;
   }
 
@@ -66,19 +112,22 @@
 </script>
 
 <main>
-  {#if currentIndex === null}
-    <Menu {texts} onOpenEditor={openEditor} />
-  {:else}
+  {#if currentIndex !== null}
     <Editor
       {texts}
       {currentIndex}
       {mode}
+      previewMode={previewMode}
       onSave={save}
       onClose={showMenu}
       on:setMode={(e) => setMode(e.detail)}
+      on:savePreviewText={savePreviewText}
     />
+  {:else}
+    <Menu {texts} onOpenEditor={openEditor} />
   {/if}
   <ActionPanel
+    {texts}
     {mode}
     {currentIndex}
     {theme}

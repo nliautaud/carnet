@@ -20,6 +20,9 @@
   --border-color: #ccc;
   --hover-bg: rgba(0, 0, 0, 0.05);
   --panel-bg: #fff;
+  
+  --font-system: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-serif: 'Newsreader', Georgia, "Times New Roman", Times, serif;
 }
 
 body[data-theme="dark"] {
@@ -72,7 +75,7 @@ body {
 button,
 input,
 body {
-  font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  font-family: var(--font-system);
 }
 
 h1 {

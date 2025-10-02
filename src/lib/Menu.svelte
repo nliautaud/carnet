@@ -17,6 +17,11 @@
 </ul>
 
 <style>
+  h1,
+  ul {
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+  }
+
   ul {
     list-style: none;
     padding: 0;
