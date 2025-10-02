@@ -5,10 +5,18 @@
   export let onNewText;
   export let onToggleMode;
   export let onToggleTheme;
+  export let onClosePanel;
   const themeIcons = ["🌗", "☀️", "🌙"];
   const themes = ["auto", "light", "dark"];
   $: themeIcon = themeIcons[themes.indexOf(theme)] ?? "🌗";
   let isOpen = false;
+
+  function togglePanel() {
+    isOpen = !isOpen;
+    if (!isOpen) {
+      onClosePanel?.();
+    }
+  }
 </script>
 
 <div id="action-panel" class:is-open={isOpen}>
@@ -23,7 +31,7 @@
     {/if}
     <button id="toggle-theme" on:click={onToggleTheme} aria-label="Toggle theme">{themeIcon}</button>
   </div>
-  <button id="toggle-panel" on:click={() => (isOpen = !isOpen)} aria-label={isOpen ? "Close action panel" : "Open action panel"}>
+  <button id="toggle-panel" on:click={togglePanel} aria-label={isOpen ? "Close action panel" : "Open action panel"}>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle">
       <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor"/>
       <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor"/>

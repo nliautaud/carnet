@@ -90,6 +90,7 @@
       const idx = (themes.indexOf(theme) + 1) % themes.length;
       setTheme(themes[idx]);
     }}
+    onClosePanel={() => setMode("mode-lecture")}
   />
 </main>
 
