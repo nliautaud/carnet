@@ -4,7 +4,8 @@
   import ActionPanel from "./lib/ActionPanel.svelte";
   import Editor from "./lib/Editor.svelte";
   import Menu from "./lib/Menu.svelte";
-  import { decompress } from './lib/compression';
+  import { decompress } from "./lib/compression";
+  import { updateMeta } from "./lib/meta";
 
   let texts = [];
   let sharedTexts = [];
@@ -27,6 +28,7 @@
 
   // Load from localStorage or from share param
   onMount(() => {
+    updateMeta();
     const params = new URLSearchParams(window.location.search);
     const share = params.get("share");
     const stored = localStorage.getItem("texts");
@@ -43,7 +45,11 @@
         // Remove ?share param from URL
         const url = new URL(window.location.href);
         url.searchParams.delete("share");
-        window.history.replaceState({}, document.title, url.pathname + url.search);
+        window.history.replaceState(
+          {},
+          document.title,
+          url.pathname + url.search,
+        );
       } catch (e) {
         // ignore
       }
@@ -71,7 +77,7 @@
   // Utility: find index of text with same title (case-insensitive, trimmed)
   function findTextIndexByTitle(title) {
     return texts.findIndex(
-      (t) => t.title?.trim().toLowerCase() === title?.trim().toLowerCase()
+      (t) => t.title?.trim().toLowerCase() === title?.trim().toLowerCase(),
     );
   }
 
@@ -83,12 +89,12 @@
       let all = [...texts];
       const existingIdx = findTextIndexByTitle(toSave.title);
       let newCurrentIndex;
-      if (detail === 'override' && existingIdx !== -1) {
+      if (detail === "override" && existingIdx !== -1) {
         all[existingIdx] = toSave;
         localStorage.setItem("texts", JSON.stringify(all));
         texts = all;
         newCurrentIndex = existingIdx;
-      } else if (detail === 'new' && existingIdx !== -1) {
+      } else if (detail === "new" && existingIdx !== -1) {
         let base = toSave.title || "Sans titre";
         let n = 2;
         let newTitle = base + " (2)";
@@ -115,11 +121,15 @@
       // Remove ?share param from URL (avoid redeclaration)
       let url2 = new URL(window.location.href);
       url2.searchParams.delete("share");
-      window.history.replaceState({}, document.title, url2.pathname + url2.search);
+      window.history.replaceState(
+        {},
+        document.title,
+        url2.pathname + url2.search,
+      );
     }
   }
 
-  function showMenu() {
+  function onEditorClose() {
     currentIndex = null;
     mode = "mode-lecture";
     previewMode = false;
@@ -131,6 +141,8 @@
     url.searchParams.delete("share");
     window.history.replaceState({}, document.title, url.pathname + url.search);
     document.body.className = mode;
+    // update the meta tags
+    updateMeta();
   }
 
   function newText() {
@@ -208,10 +220,10 @@
       texts={sharedTexts}
       {currentIndex}
       {mode}
-      previewMode={previewMode}
+      {previewMode}
       localTexts={texts}
       onSave={save}
-      onClose={showMenu}
+      onClose={onEditorClose}
       on:setMode={(e) => setMode(e.detail)}
       on:savePreviewText={savePreviewText}
     />
@@ -222,13 +234,23 @@
       {mode}
       previewMode={false}
       onSave={save}
-      onClose={showMenu}
+      onClose={onEditorClose}
       on:setMode={(e) => setMode(e.detail)}
       on:savePreviewText={savePreviewText}
     />
   {:else}
-    <Menu {texts} {sharedTexts} onOpenEditor={openEditor} onOpenSharedPreview={openSharedPreview} onDeleteSharedText={deleteSharedText}
-      selectMode={selectMode} selected={selected} onToggleSelectMode={handleToggleSelectMode} onSelectItem={handleSelectItem} onDeleteSelection={handleDeleteSelection} />
+    <Menu
+      {texts}
+      {sharedTexts}
+      onOpenEditor={openEditor}
+      onOpenSharedPreview={openSharedPreview}
+      onDeleteSharedText={deleteSharedText}
+      {selectMode}
+      {selected}
+      onToggleSelectMode={handleToggleSelectMode}
+      onSelectItem={handleSelectItem}
+      onDeleteSelection={handleDeleteSelection}
+    />
   {/if}
   <ActionPanel
     texts={previewMode && sharedTexts.length ? sharedTexts : texts}
@@ -236,7 +258,8 @@
     {currentIndex}
     {theme}
     onNewText={newText}
-    onToggleMode={() => setMode(mode === "mode-edition" ? "mode-lecture" : "mode-edition")}
+    onToggleMode={() =>
+      setMode(mode === "mode-edition" ? "mode-lecture" : "mode-edition")}
     onToggleTheme={() => {
       const themes = ["auto", "light", "dark"];
       const idx = (themes.indexOf(theme) + 1) % themes.length;
@@ -244,7 +267,7 @@
     }}
     onClosePanel={handleClosePanel}
     showModeToggle={!previewMode}
-    selectMode={selectMode}
+    {selectMode}
     onToggleSelectMode={handleToggleSelectMode}
   />
 </main>

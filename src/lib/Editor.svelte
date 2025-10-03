@@ -5,6 +5,7 @@
   export let previewMode = false;
   export let localTexts = [];
   import { createEventDispatcher, onMount } from "svelte";
+  import { updateMeta } from "./meta";
   const dispatch = createEventDispatcher();
   export let onSave;
   export let onClose;
@@ -20,21 +21,48 @@
 
   function handleTitleInput(e) {
     title = e.target.value;
+    updateMeta(texts[currentIndex]);
     onSave?.();
   }
   function handleContentInput(e) {
+    updateMeta(texts[currentIndex]);
     content = e.target.innerHTML;
     onSave?.();
   }
   onMount(() => {
     if (mode === "mode-edition" && titleInput) titleInput.focus();
+    if (texts && typeof currentIndex === "number")
+      updateMeta(texts[currentIndex]);
   });
+
 </script>
 
 <button class="close" type="button" on:click={onClose} aria-label="Fermer">
-  <svg width="24px" height="24px" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-    <line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    <line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+  <svg
+    width="24px"
+    height="24px"
+    viewBox="0 0 20 20"
+    fill="none"
+    aria-hidden="true"
+  >
+    <line
+      x1="5"
+      y1="5"
+      x2="15"
+      y2="15"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <line
+      x1="15"
+      y1="5"
+      x2="5"
+      y2="15"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
   </svg>
 </button>
 
@@ -69,15 +97,29 @@
   ></div>
 {/if}
 {#if previewMode}
-  {#if texts && typeof currentIndex === 'number'}
+  {#if texts && typeof currentIndex === "number"}
     {@const previewTitle = texts[currentIndex]?.title || ""}
-    {@const existingIdx = localTexts.findIndex(t => t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase())}
+    {@const existingIdx = localTexts.findIndex(
+      (t) =>
+        t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase(),
+    )}
     <div class="save-preview-btns-container">
       {#if existingIdx !== -1}
-        <button class="save-preview-float" on:click={() => dispatch('savePreviewText', 'new')}>Save as new text</button>
-        <button class="save-preview-float override" on:click={() => dispatch('savePreviewText', 'override')}>Override existing text</button>
+        <button
+          class="save-preview-float"
+          on:click={() => dispatch("savePreviewText", "new")}
+          >Save as new text</button
+        >
+        <button
+          class="save-preview-float override"
+          on:click={() => dispatch("savePreviewText", "override")}
+          >Override existing text</button
+        >
       {:else}
-        <button class="save-preview-float" on:click={() => dispatch('savePreviewText')}>Save to my texts</button>
+        <button
+          class="save-preview-float"
+          on:click={() => dispatch("savePreviewText")}>Save to my texts</button
+        >
       {/if}
     </div>
   {/if}
@@ -154,12 +196,15 @@
     background: var(--text-color);
     color: var(--bg-color);
     border: none;
-    font-size: .9em;
+    font-size: 0.9em;
     font-weight: 600;
     padding: 0.72em 2em;
-    box-shadow: 0 4px 16px 0 rgba(0,0,0,0.08);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.08);
     cursor: pointer;
-    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    transition:
+      background 0.2s,
+      color 0.2s,
+      box-shadow 0.2s;
     margin: 0;
     width: max-content;
     min-width: 220px;
@@ -171,7 +216,7 @@
   .save-preview-float:active {
     background: var(--border-color);
     color: var(--text-color);
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
   }
 
   #title,

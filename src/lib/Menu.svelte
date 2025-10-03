@@ -11,7 +11,7 @@
   export let onDeleteSelection;
 </script>
 
-<h1>Mes Textes</h1>
+<h1>Carnet</h1>
 {#if selectMode}
   <div class="selection-section">
     {#if selected.size === 0}

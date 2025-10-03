@@ -74,6 +74,9 @@ body {
   font-family: var(--font-system);
 }
 
+button {
+  cursor: pointer;
+}
 button,
 input {
   font-family: inherit;
