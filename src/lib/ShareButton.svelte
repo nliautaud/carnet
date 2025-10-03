@@ -1,18 +1,12 @@
 <script>
   export let title = "";
   export let content = "";
+  import { compress } from './compression';
   let copying = false;
-
-  function encodeBase64Url(str) {
-    return btoa(unescape(encodeURIComponent(str)))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/, "");
-  }
 
   function handleShare() {
     const data = JSON.stringify({ title, content });
-    const encoded = encodeBase64Url(data);
+    const encoded = compress(data);
     const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
     navigator.clipboard.writeText(shareUrl);
     copying = true;

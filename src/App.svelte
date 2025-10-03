@@ -4,6 +4,7 @@
   import ActionPanel from "./lib/ActionPanel.svelte";
   import Editor from "./lib/Editor.svelte";
   import Menu from "./lib/Menu.svelte";
+  import { decompress } from './lib/compression';
 
   let texts = [];
   let sharedTexts = [];
@@ -13,13 +14,6 @@
   let previewMode = false;
   let selectMode = false;
   let selected = new Set();
-
-  // Helper to decode base64url
-  function decodeBase64Url(str) {
-    str = str.replace(/-/g, "+").replace(/_/g, "/");
-    while (str.length % 4) str += "=";
-    return decodeURIComponent(escape(atob(str)));
-  }
 
   function addSharedText(text) {
     sharedTexts = [...sharedTexts, text];
@@ -41,7 +35,7 @@
     sharedTexts = storedShared ? JSON.parse(storedShared) : [];
     if (share) {
       try {
-        const data = JSON.parse(decodeBase64Url(share));
+        const data = JSON.parse(decompress(share));
         addSharedText(data);
         currentIndex = sharedTexts.length - 1;
         mode = "mode-lecture";
