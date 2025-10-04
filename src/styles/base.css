@@ -67,7 +67,7 @@ body[data-theme="auto"] {
 body {
   margin: 0;
   padding: 0;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.6;
   background: var(--bg-color);
   color: var(--text-color);

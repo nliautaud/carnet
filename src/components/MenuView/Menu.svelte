@@ -1,9 +1,9 @@
 <script>
-  import { TextService, SharedTextService } from '../../services/textService.js';
-  import { texts, sharedTexts, newlySharedIndexes, currentIndex, mode, previewMode, selectMode, selected } from '../../stores/appStore.js';
-  import TextList from './MenuTextList.svelte';
-  import SharedTextsList from './MenuSharedTextsList.svelte';
-  import SelectionControls from './MenuActions.svelte';
+  import { SharedTextService, TextService } from '../../services/textService.js';
+  import { currentIndex, mode, newlySharedIndexes, previewMode, selectMode, selected, sharedTexts, texts } from '../../stores/appStore.js';
+  import MenuActions from './MenuActions.svelte';
+  import MenuSharedTextsList from './MenuSharedTextsList.svelte';
+  import MenuTextList from './MenuTextList.svelte';
 
   function openEditor(i) {
     currentIndex.set(i);
@@ -73,17 +73,17 @@
   }
 </script>
 
-<h1 class="text-serif">Carnet</h1>
+<h1>Carnet</h1>
 
 {#if $selectMode}
-  <SelectionControls
+  <MenuActions
     selected={$selected}
     onDeleteSelection={handleDeleteSelection}
     onShareSelection={handleShareSelection}
   />
 {/if}
 
-<TextList
+<MenuTextList
   texts={$texts}
   selectMode={$selectMode}
   selected={$selected}
@@ -91,10 +91,19 @@
   onSelectItem={handleSelectItem}
 />
 
-<SharedTextsList
+<MenuSharedTextsList
   sharedTexts={$sharedTexts}
   newlySharedIndexes={$newlySharedIndexes}
   onOpenSharedPreview={openSharedPreview}
   onDeleteSharedText={deleteSharedText}
 />
 
+<style>
+  h1 {
+    font-family: var(--font-serif);
+    font-size: 2em;
+    font-weight: 600;
+    text-align: center;
+    margin: 2em 0;
+  }
+</style>

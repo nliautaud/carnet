@@ -8,45 +8,28 @@ input {
     font-weight: inherit;
 }
 
-h1 {
-    font-size: 1.6em;
-    margin: 1em 0 0.5em 0;
-    font-weight: normal;
-}
-
 .text-list {
+    font-family: var(--font-serif);
+    font-weight: 500;
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin: 0 0 3em 0;
 }
 
-.text-list-item {
+.text-item {
     margin: 0.8em 0;
     width: 100%;
     display: flex;
     align-items: center;
     gap: 0.5em;
 }
-
-.shared-text-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.shared-text-item {
-    display: flex;
-    align-items: center;
+.text-item.muted {
     margin: 0.5em 0;
     opacity: 0.7;
 }
 
-.shared-text-item.featured {
-    opacity: 1;
-    margin: 0.3em 0;
-}
-
 .btn-text-item {
+    position: relative;
     flex: 1;
     text-align: left;
     display: block;
@@ -54,11 +37,20 @@ h1 {
     border-radius: 6px;
     text-decoration: none;
     color: var(--text-color);
-    border: 1px solid var(--border-color);
+    border: 0px solid var(--border-color);
     transition: background 0.2s;
     background: var(--bg-color);
     font-size: 1em;
     cursor: pointer;
+}
+.btn-text-item:after {
+    border-bottom: 1px solid var(--border-color);
+    content: "";
+    display: block;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    position: absolute;
 }
 
 .btn-text-item:hover {
@@ -70,22 +62,10 @@ h1 {
     color: var(--text-muted-color);
 }
 
-.btn-shared-text {
-    flex: 1;
-    text-align: left;
-    background: none;
-    border: 1px solid var(--border-color);
+.btn-text-item.muted {
     color: var(--text-muted-color);
-    border-radius: 6px;
-    padding: 0.6em 1em;
-    font-size: 1em;
+    font-size: .9em;
     font-style: italic;
-    transition: background 0.2s;
-    cursor: pointer;
-}
-
-.btn-shared-text:hover {
-    background: var(--hover-bg);
 }
 
 .btn-icon {
@@ -143,11 +123,11 @@ h1 {
 }
 
 .section-title {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: var(--text-muted-color);
-    margin-top: 2em;
     margin-bottom: 0.5em;
-    font-weight: 400;
+    font-weight: 300;
+    text-align: center;
 }
 
 .section-title.featured {
@@ -169,11 +149,6 @@ h1 {
     width: 1.1em;
     height: 1.1em;
     vertical-align: middle;
-}
-
-.text-serif {
-    font-family: var(--font-serif);
-    font-weight: 500;
 }
 
 .text-muted {

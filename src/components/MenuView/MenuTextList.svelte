@@ -6,9 +6,9 @@
   export let onSelectItem;
 </script>
 
-<ul class="text-list text-serif">
+<ul class="text-list">
   {#each texts as t, i}
-    <li class="text-list-item">
+    <li class="text-item">
       <button
         type="button"
         on:click={() => !selectMode && onOpenEditor(i)}

@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { updateMeta } from '../../lib/meta.js';
   import { TextService } from '../../services/textService.js';
-  import { texts, currentIndex, mode, previewMode, sharedTexts } from '../../stores/appStore.js';
+  import { currentIndex, mode, previewMode, sharedTexts, texts } from '../../stores/appStore.js';
   import CloseButton from '../CloseButton.svelte';
   import PreviewPill from './PreviewPill.svelte';
   import SavePreviewButtons from './SavePreviewButtons.svelte';
@@ -158,10 +158,10 @@
 <style>
   input.title {
     width: 100%;
-    margin: 1em 0;
+    margin: 2em 0 1em 0;
     padding: 0.5rem;
-    font-size: 1.4em;
-    font-weight: bold;
+    font-size: 1.75em;
+    font-weight: 600;
     border: none;
     background: transparent;
     color: var(--text-color);
