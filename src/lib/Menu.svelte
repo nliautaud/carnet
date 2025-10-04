@@ -6,7 +6,6 @@
   export let onDeleteSharedText;
   export let selectMode = false;
   export let selected = new Set();
-  export let onToggleSelectMode;
   export let onSelectItem;
   export let onDeleteSelection;
 </script>

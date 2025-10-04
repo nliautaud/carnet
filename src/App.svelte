@@ -247,7 +247,6 @@
       onDeleteSharedText={deleteSharedText}
       {selectMode}
       {selected}
-      onToggleSelectMode={handleToggleSelectMode}
       onSelectItem={handleSelectItem}
       onDeleteSelection={handleDeleteSelection}
     />

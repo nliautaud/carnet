@@ -7,7 +7,6 @@
   export let onToggleMode;
   export let onToggleTheme;
   export let onClosePanel;
-  export let previewMode = false; // (can be removed if not needed)
   export let showModeToggle = true;
   export let selectMode = false;
   export let onToggleSelectMode;
