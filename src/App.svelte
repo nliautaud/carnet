@@ -82,8 +82,7 @@
   }
 
   // Save preview: support override or save as new
-  function savePreviewText(event) {
-    const detail = event?.detail;
+  function savePreviewText(detail) {
     if (previewMode && sharedTexts.length && typeof currentIndex === "number") {
       const toSave = sharedTexts[currentIndex];
       let all = [...texts];
@@ -224,8 +223,7 @@
       localTexts={texts}
       onSave={save}
       onClose={onEditorClose}
-      on:setMode={(e) => setMode(e.detail)}
-      on:savePreviewText={savePreviewText}
+      onSavePreviewText={savePreviewText}
     />
   {:else if currentIndex !== null}
     <Editor
@@ -235,8 +233,7 @@
       previewMode={false}
       onSave={save}
       onClose={onEditorClose}
-      on:setMode={(e) => setMode(e.detail)}
-      on:savePreviewText={savePreviewText}
+      onSavePreviewText={savePreviewText}
     />
   {:else}
     <Menu

@@ -4,11 +4,11 @@
   export let mode = "mode-lecture";
   export let previewMode = false;
   export let localTexts = [];
-  import { createEventDispatcher, onMount } from "svelte";
+  import { onMount } from "svelte";
   import { updateMeta } from "./meta";
-  const dispatch = createEventDispatcher();
   export let onSave;
   export let onClose;
+  export let onSavePreviewText;
   let title = "";
   let content = "";
   let titleInput;
@@ -107,18 +107,18 @@
       {#if existingIdx !== -1}
         <button
           class="save-preview-float"
-          on:click={() => dispatch("savePreviewText", "new")}
+          on:click={() => onSavePreviewText?.("new")}
           >Save as new text</button
         >
         <button
           class="save-preview-float override"
-          on:click={() => dispatch("savePreviewText", "override")}
+          on:click={() => onSavePreviewText?.("override")}
           >Override existing text</button
         >
       {:else}
         <button
           class="save-preview-float"
-          on:click={() => dispatch("savePreviewText")}>Save to my texts</button
+          on:click={() => onSavePreviewText?.()}>Save to my texts</button
         >
       {/if}
     </div>
