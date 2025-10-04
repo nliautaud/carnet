@@ -5,7 +5,7 @@
   let copying = false;
 
   function handleShare() {
-    const data = JSON.stringify({ title, content });
+    const data = JSON.stringify([{ title, content }]);
     const encoded = compress(data);
     const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
     navigator.clipboard.writeText(shareUrl);

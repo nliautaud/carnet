@@ -1,6 +1,7 @@
 <script>
   export let texts = [];
   export let sharedTexts = [];
+  export let newlySharedIndexes = new Set();
   export let onOpenEditor;
   export let onOpenSharedPreview;
   export let onDeleteSharedText;
@@ -8,6 +9,7 @@
   export let selected = new Set();
   export let onSelectItem;
   export let onDeleteSelection;
+  export let onShareSelection;
 </script>
 
 <h1>Carnet</h1>
@@ -17,7 +19,8 @@
       <span class="items-selected">no item selected</span>
     {:else}
       <span class="items-selected">{selected.size} items selected</span>
-      <button class="delete-selection" on:click={onDeleteSelection}>delete selection</button>
+      <button class="share-selection" on:click={onShareSelection} disabled={selected.size === 0}>share selected</button>
+      <button class="delete-selection" on:click={onDeleteSelection} disabled={selected.size === 0}>delete selection</button>
     {/if}
   </div>
 {/if}
@@ -37,17 +40,39 @@
   {/each}
 </ul>
 {#if sharedTexts && sharedTexts.length}
-  <h2 class="shared-section-title">Shared with me</h2>
-  <ul class="shared-list">
-    {#each sharedTexts as t, i}
-      <li class="shared-item">
-        <button type="button" class="shared-btn" on:click={() => onOpenSharedPreview(i)}>{t.title || "Sans titre"}</button>
-        <button class="delete-shared" title="Delete shared text" on:click={() => onDeleteSharedText(i)}>
-          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        </button>
-      </li>
-    {/each}
-  </ul>
+  <!-- Featured shared texts (newly shared) -->
+  {#if newlySharedIndexes.size > 0}
+    <h2 class="shared-section-title featured">Newly shared</h2>
+    <ul class="shared-list featured">
+      {#each sharedTexts as t, i}
+        {#if newlySharedIndexes.has(i)}
+          <li class="shared-item featured">
+            <button type="button" class="shared-btn" on:click={() => onOpenSharedPreview(i)}>{t.title || "Sans titre"}</button>
+            <button class="delete-shared" title="Delete shared text" on:click={() => onDeleteSharedText(i)}>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </li>
+        {/if}
+      {/each}
+    </ul>
+  {/if}
+  
+  <!-- Regular shared texts (previously shared) -->
+  {#if sharedTexts.length > newlySharedIndexes.size}
+    <h2 class="shared-section-title">Previously shared</h2>
+    <ul class="shared-list">
+      {#each sharedTexts as t, i}
+        {#if !newlySharedIndexes.has(i)}
+          <li class="shared-item">
+            <button type="button" class="shared-btn" on:click={() => onOpenSharedPreview(i)}>{t.title || "Sans titre"}</button>
+            <button class="delete-shared" title="Delete shared text" on:click={() => onDeleteSharedText(i)}>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </button>
+          </li>
+        {/if}
+      {/each}
+    </ul>
+  {/if}
 {/if}
 
 <style>
@@ -95,16 +120,31 @@
     margin-bottom: 0.5em;
     font-weight: 400;
   }
+  .shared-section-title.featured {
+    color: var(--text-color);
+    font-weight: 500;
+  }
   .shared-list {
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+  .shared-list.featured {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1em;
+    margin-bottom: 1em;
+    background: var(--bg-color);
   }
   .shared-item {
     display: flex;
     align-items: center;
     margin: 0.5em 0;
     opacity: 0.7;
+  }
+  .shared-item.featured {
+    opacity: 1;
+    margin: 0.3em 0;
   }
   .shared-btn {
     flex: 1;
@@ -150,6 +190,23 @@
   .items-selected {
     flex: 1;
   }
+  .share-selection {
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 1em;
+    padding: 0.3em 0.8em;
+    cursor: pointer;
+    font-size: 0.95em;
+    margin-left: 0.5em;
+  }
+  .share-selection:hover:not(:disabled) {
+    background: #2980b9;
+  }
+  .share-selection:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+  }
   .delete-selection {
     background: #e74c3c;
     color: #fff;
@@ -160,8 +217,12 @@
     font-size: 0.95em;
     margin-left: 0.5em;
   }
-  .delete-selection:hover {
+  .delete-selection:hover:not(:disabled) {
     background: #c0392b;
+  }
+  .delete-selection:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
   }
   .entry-checkbox {
     margin-right: 0.7em;

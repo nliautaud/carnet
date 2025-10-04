@@ -4,7 +4,7 @@
   import ActionPanel from "./lib/ActionPanel.svelte";
   import Editor from "./lib/Editor.svelte";
   import Menu from "./lib/Menu.svelte";
-  import { decompress } from "./lib/compression";
+  import { compress, decompress } from "./lib/compression";
   import { updateMeta } from "./lib/meta";
 
   let texts = [];
@@ -15,6 +15,7 @@
   let previewMode = false;
   let selectMode = false;
   let selected = new Set();
+  let newlySharedIndexes = new Set(); // Track indexes of newly shared texts in current session
 
   function addSharedText(text) {
     sharedTexts = [...sharedTexts, text];
@@ -38,10 +39,27 @@
     if (share) {
       try {
         const data = JSON.parse(decompress(share));
-        addSharedText(data);
-        currentIndex = sharedTexts.length - 1;
-        mode = "mode-lecture";
-        previewMode = true;
+        // Handle array of texts
+        const startIndex = sharedTexts.length;
+        data.forEach(text => addSharedText(text));
+        
+        // Mark the newly added texts as featured
+        for (let i = startIndex; i < sharedTexts.length; i++) {
+          newlySharedIndexes.add(i);
+        }
+        
+        // Only open preview if there's exactly one shared text
+        if (data.length === 1) {
+          currentIndex = sharedTexts.length - 1;
+          mode = "mode-lecture";
+          previewMode = true;
+        } else {
+          // Multiple texts - stay in menu mode to show all shared texts
+          currentIndex = null;
+          mode = "mode-lecture";
+          previewMode = false;
+        }
+        
         // Remove ?share param from URL
         const url = new URL(window.location.href);
         url.searchParams.delete("share");
@@ -165,6 +183,19 @@
 
   function deleteSharedText(i) {
     removeSharedText(i);
+    // Remove from newly shared indexes and adjust other indexes
+    newlySharedIndexes.delete(i);
+    // Adjust indexes for items after the deleted one
+    const newIndexes = new Set();
+    newlySharedIndexes.forEach(index => {
+      if (index > i) {
+        newIndexes.add(index - 1);
+      } else if (index < i) {
+        newIndexes.add(index);
+      }
+    });
+    newlySharedIndexes = newIndexes;
+    
     // If deleting the currently previewed shared text, return to menu
     if (previewMode && currentIndex === i) {
       currentIndex = null;
@@ -207,6 +238,18 @@
     }
   }
 
+  function handleShareSelection() {
+    if (selected.size > 0) {
+      const selectedTexts = Array.from(selected).map(i => texts[i]);
+      const data = JSON.stringify(selectedTexts);
+      const encoded = compress(data);
+      const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
+      navigator.clipboard.writeText(shareUrl);
+      // Show some feedback (could be enhanced with a toast notification)
+      alert(`Share link copied to clipboard! (${selected.size} texts)`);
+    }
+  }
+
   function handleClosePanel() {
     selectMode = false;
     setMode("mode-lecture");
@@ -239,6 +282,7 @@
     <Menu
       {texts}
       {sharedTexts}
+      {newlySharedIndexes}
       onOpenEditor={openEditor}
       onOpenSharedPreview={openSharedPreview}
       onDeleteSharedText={deleteSharedText}
@@ -246,6 +290,7 @@
       {selected}
       onSelectItem={handleSelectItem}
       onDeleteSelection={handleDeleteSelection}
+      onShareSelection={handleShareSelection}
     />
   {/if}
   <ActionPanel
