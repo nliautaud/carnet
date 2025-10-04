@@ -128,7 +128,7 @@
 <style>
   input.title {
     width: 100%;
-    margin: 0;
+    margin: 1em 0;
     padding: 0.5rem;
     font-size: 1.4em;
     font-weight: bold;
