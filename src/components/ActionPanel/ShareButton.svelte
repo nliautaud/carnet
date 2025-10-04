@@ -1,21 +1,26 @@
 <script>
-  export let title = "";
-  export let content = "";
-  import { compress } from './compression';
+  import { compress } from '../../lib/compression.js';
+  import { SharedTextService } from '../../services/textService.js';
+
+  export let title = '';
+  export let content = '';
+
   let copying = false;
 
-  function handleShare() {
+  async function handleShare() {
     const data = JSON.stringify([{ title, content }]);
     const encoded = compress(data);
     const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-    navigator.clipboard.writeText(shareUrl);
-    copying = true;
-    setTimeout(() => (copying = false), 1200);
+    
+    const success = await SharedTextService.copyToClipboard(shareUrl);
+    if (success) {
+      copying = true;
+      setTimeout(() => (copying = false), 1200);
+    }
   }
 </script>
 
 <button
-  class="share-btn-actionpanel"
   type="button"
   on:click={handleShare}
   aria-label="Share this text"

@@ -1,66 +1,103 @@
 <script>
-  export let texts = [];
-  export let mode = "mode-lecture";
-  export let currentIndex = null;
-  export let theme = "auto";
-  export let onNewText;
-  export let onToggleMode;
-  export let onToggleTheme;
-  export let onClosePanel;
-  export let showModeToggle = true;
-  export let selectMode = false;
-  export let onToggleSelectMode;
-  const themeIcons = ["🌗", "☀️", "🌙"];
-  const themes = ["auto", "light", "dark"];
-  $: themeIcon = themeIcons[themes.indexOf(theme)] ?? "🌗";
+  import { ThemeService } from '../../services/themeService.js';
+  import { TextService } from '../../services/textService.js';
+  import { texts, currentIndex, mode, theme, previewMode, selectMode, selected, sharedTexts } from '../../stores/appStore.js';
+  import ShareButton from './ShareButton.svelte';
+
   let isOpen = false;
+
+  $: themeIcon = ThemeService.getThemeIcon($theme);
+  $: currentTexts = $previewMode && $sharedTexts.length ? $sharedTexts : $texts;
 
   function togglePanel() {
     isOpen = !isOpen;
     if (!isOpen) {
-      onClosePanel?.();
+      selectMode.set(false);
+      mode.set('mode-lecture');
     }
   }
 
-  import ShareButton from "./ShareButton.svelte";
+  function newText() {
+    const newText = TextService.createNewText();
+    texts.update(textsArray => TextService.addText(textsArray, newText));
+    openEditor($texts.length - 1);
+    setMode('mode-edition');
+  }
+
+  function openEditor(i) {
+    currentIndex.set(i);
+    setMode('mode-lecture');
+  }
+
+  function setMode(m) {
+    mode.set(m);
+    ThemeService.applyMode(m);
+  }
+
+  function setTheme(t) {
+    theme.set(t);
+    ThemeService.applyTheme(t);
+  }
+
+  function handleToggleMode() {
+    setMode($mode === 'mode-edition' ? 'mode-lecture' : 'mode-edition');
+  }
+
+  function handleToggleTheme() {
+    const nextTheme = ThemeService.getNextTheme($theme);
+    setTheme(nextTheme);
+  }
+
+  function handleToggleSelectMode() {
+    selectMode.update(mode => !mode);
+    if ($selectMode) {
+      selected.set(new Set());
+    }
+  }
 </script>
 
 <div id="action-panel" class:is-open={isOpen}>
   <div class="actions" class:visible={isOpen}>
-    {#if currentIndex === null}
-      <button id="new-text-btn" on:click={onNewText} aria-label="New text">＋</button>
-      <button id="select-mode-btn" on:click={onToggleSelectMode} aria-label="Toggle select mode" aria-pressed={selectMode} class:active={selectMode}>
+    {#if $currentIndex === null}
+      <button id="new-text-btn" on:click={newText} aria-label="New text">＋</button>
+      <button 
+        id="select-mode-btn" 
+        on:click={handleToggleSelectMode} 
+        aria-label="Toggle select mode" 
+        aria-pressed={$selectMode} 
+        class:active={$selectMode}
+      >
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="vertical-align:middle;">
-          <rect x="3" y="3" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2" fill={selectMode ? 'currentColor' : 'none'} />
-          <polyline points="7,12 10,15 15,8" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:{selectMode ? 1 : 0};transition:opacity 0.15s;" />
+          <rect x="3" y="3" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2" fill={$selectMode ? 'currentColor' : 'none'} />
+          <polyline points="7,12 10,15 15,8" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:{$selectMode ? 1 : 0};transition:opacity 0.15s;" />
         </svg>
       </button>
     {/if}
-    {#if currentIndex !== null && showModeToggle}
+    {#if $currentIndex !== null && !$previewMode}
       <button
         id="toggle-mode"
-        on:click={onToggleMode}
-        aria-label={mode === "mode-edition"
-          ? "Switch to view mode"
-          : "Switch to edit mode"}
+        on:click={handleToggleMode}
+        aria-label={$mode === 'mode-edition'
+          ? 'Switch to view mode'
+          : 'Switch to edit mode'}
       >
-        {mode === "mode-edition" ? "👁" : "✏️"}
+        {$mode === 'mode-edition' ? '👁' : '✏️'}
       </button>
     {/if}
-    {#if currentIndex !== null}
+    {#if $currentIndex !== null}
       <ShareButton
-        title={texts[currentIndex || 0]?.title}
-        content={texts[currentIndex || 0]?.content}
+        title={currentTexts[$currentIndex || 0]?.title}
+        content={currentTexts[$currentIndex || 0]?.content}
       />
     {/if}
-    <button id="toggle-theme" on:click={onToggleTheme} aria-label="Toggle theme"
+    <button id="toggle-theme" on:click={handleToggleTheme} aria-label="Toggle theme"
       >{themeIcon}</button
     >
   </div>
   <button
     id="toggle-panel"
     on:click={togglePanel}
-    aria-label={isOpen ? "Close action panel" : "Open action panel"}
+    aria-label={isOpen ? 'Close action panel' : 'Open action panel'}
   >
     <svg
       width="24"
