@@ -9,15 +9,14 @@
       selected,
       sharedTexts,
       texts,
-      theme,
   } from "../../stores/appStore.js";
   import ListCheckIcon from "../icons/listCheck.svelte";
   import MenuIcon from "../icons/menu.svelte";
   import ModeIcon from "../icons/mode.svelte";
   import PlusIcon from "../icons/plus.svelte";
-  import ThemeIcon from "../icons/theme.svelte";
   import XIcon from "../icons/x.svelte";
   import ShareButton from "./ShareButton.svelte";
+  import ThemeButton from "./ThemeButton.svelte";
 
   let isOpen = false;
 
@@ -50,18 +49,8 @@
     ThemeService.applyMode(m);
   }
 
-  function setTheme(t) {
-    theme.set(t);
-    ThemeService.applyTheme(t);
-  }
-
   function handleToggleMode() {
     setMode($mode === "mode-edition" ? "mode-lecture" : "mode-edition");
-  }
-
-  function handleToggleTheme() {
-    const nextTheme = ThemeService.getNextTheme($theme);
-    setTheme(nextTheme);
   }
 
   function handleToggleSelectMode() {
@@ -113,14 +102,7 @@
           content={currentTexts[$currentIndex || 0]?.content}
         />
       {/if}
-      <button
-        class="btn-icon"
-        id="toggle-theme"
-        on:click={handleToggleTheme}
-        aria-label="Toggle theme"
-      >
-        <ThemeIcon /></button
-      >
+      <ThemeButton />
     </div>
     <button
       id="toggle-panel"

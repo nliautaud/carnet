@@ -1,97 +1,97 @@
-import { StorageService } from './storageService.js';
-import { compress, decompress } from '../lib/compression.js';
+import { StorageService } from './storageService.js'
+import { compress, decompress } from '../lib/compression.js'
 
 // Text management service
 export class TextService {
   static findTextIndexByTitle(texts, title) {
     return texts.findIndex(
       (t) => t.title?.trim().toLowerCase() === title?.trim().toLowerCase()
-    );
+    )
   }
 
   static createNewText() {
-    return { title: '', content: '' };
+    return { title: '', content: '' }
   }
 
   static saveText(texts, index, title, content) {
     if (index !== null && index >= 0 && index < texts.length) {
-      texts[index] = { title, content };
-      StorageService.setTexts(texts);
-      return texts;
+      texts[index] = { title, content }
+      StorageService.setTexts(texts)
+      return texts
     }
-    return texts;
+    return texts
   }
 
   static addText(texts, text) {
-    const newTexts = [...texts, text];
-    StorageService.setTexts(newTexts);
-    return newTexts;
+    const newTexts = [...texts, text]
+    StorageService.setTexts(newTexts)
+    return newTexts
   }
 
   static deleteText(texts, index) {
-    const newTexts = texts.filter((_, i) => i !== index);
-    StorageService.setTexts(newTexts);
-    return newTexts;
+    const newTexts = texts.filter((_, i) => i !== index)
+    StorageService.setTexts(newTexts)
+    return newTexts
   }
 
   static deleteTexts(texts, indexes) {
-    const newTexts = texts.filter((_, i) => !indexes.has(i));
-    StorageService.setTexts(newTexts);
-    return newTexts;
+    const newTexts = texts.filter((_, i) => !indexes.has(i))
+    StorageService.setTexts(newTexts)
+    return newTexts
   }
 
   static generateUniqueTitle(baseTitle, existingTexts) {
     if (this.findTextIndexByTitle(existingTexts, baseTitle) === -1) {
-      return baseTitle;
+      return baseTitle
     }
 
-    let n = 2;
-    let newTitle = `${baseTitle} (${n})`;
+    let n = 2
+    let newTitle = `${baseTitle} (${n})`
     while (this.findTextIndexByTitle(existingTexts, newTitle) !== -1) {
-      n++;
-      newTitle = `${baseTitle} (${n})`;
+      n++
+      newTitle = `${baseTitle} (${n})`
     }
-    return newTitle;
+    return newTitle
   }
 }
 
 // Shared text management service
 export class SharedTextService {
   static addSharedText(sharedTexts, text) {
-    const newSharedTexts = [...sharedTexts, text];
-    StorageService.setSharedTexts(newSharedTexts);
-    return newSharedTexts;
+    const newSharedTexts = [...sharedTexts, text]
+    StorageService.setSharedTexts(newSharedTexts)
+    return newSharedTexts
   }
 
   static removeSharedText(sharedTexts, index) {
-    const newSharedTexts = sharedTexts.filter((_, i) => i !== index);
-    StorageService.setSharedTexts(newSharedTexts);
-    return newSharedTexts;
+    const newSharedTexts = sharedTexts.filter((_, i) => i !== index)
+    StorageService.setSharedTexts(newSharedTexts)
+    return newSharedTexts
   }
 
   static processSharedData(shareParam) {
     try {
-      const data = JSON.parse(decompress(shareParam));
-      return Array.isArray(data) ? data : [data];
+      const data = JSON.parse(decompress(shareParam))
+      return Array.isArray(data) ? data : [data]
     } catch (error) {
-      console.error('Error processing shared data:', error);
-      return [];
+      console.error('Error processing shared data:', error)
+      return []
     }
   }
 
   static createShareUrl(texts) {
-    const data = JSON.stringify(texts);
-    const encoded = compress(data);
-    return `${window.location.origin}${window.location.pathname}?share=${encoded}`;
+    const data = JSON.stringify(texts)
+    const encoded = compress(data)
+    return `${window.location.origin}${window.location.pathname}?share=${encoded}`
   }
 
   static async copyToClipboard(text) {
     try {
-      await navigator.clipboard.writeText(text);
-      return true;
+      await navigator.clipboard.writeText(text)
+      return true
     } catch (error) {
-      console.error('Error copying to clipboard:', error);
-      return false;
+      console.error('Error copying to clipboard:', error)
+      return false
     }
   }
 }

@@ -107,7 +107,7 @@
     position: relative;
     margin: 2em;
     padding: 2em 1.5em;
-    background: var(--bg-color);
+    background: var(--bg-color-gradient);
     border-radius: 1em;
     color: var(--text-color);
     transition:

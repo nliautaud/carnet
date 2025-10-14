@@ -1,5 +1,5 @@
 <script>
-    import XIcon from "../icons/x.svelte";
+  import XIcon from "../icons/x.svelte";
 
   export let sharedTexts = [];
   export let newlySharedIndexes = new Set();
@@ -15,8 +15,17 @@
       {#each sharedTexts as t, i}
         {#if newlySharedIndexes.has(i)}
           <li class="text-item">
-            <button type="button" class="btn-text-item muted" on:click={() => onOpenSharedPreview(i)}>{t.title || 'Sans titre'}</button>
-            <button class="btn-icon" title="Dismiss" on:click={() => onDeleteSharedText(i)}>
+            <button
+              type="button"
+              class="btn-text-item muted"
+              on:click={() => onOpenSharedPreview(i)}
+              >{t.title || "Sans titre"}</button
+            >
+            <button
+              class="btn-icon small muted"
+              title="Dismiss"
+              on:click={() => onDeleteSharedText(i)}
+            >
               <XIcon />
             </button>
           </li>
@@ -24,7 +33,7 @@
       {/each}
     </ul>
   {/if}
-  
+
   <!-- Regular shared texts (previously shared) -->
   {#if sharedTexts.length > newlySharedIndexes.size}
     <h2 class="section-title">Previously shared</h2>
@@ -32,8 +41,17 @@
       {#each sharedTexts as t, i}
         {#if !newlySharedIndexes.has(i)}
           <li class="text-item muted">
-            <button type="button" class="btn-text-item muted" on:click={() => onOpenSharedPreview(i)}>{t.title || 'Sans titre'}</button>
-            <button class="btn-icon" title="Dismiss" on:click={() => onDeleteSharedText(i)}>
+            <button
+              type="button"
+              class="btn-text-item muted"
+              on:click={() => onOpenSharedPreview(i)}
+              >{t.title || "Sans titre"}</button
+            >
+            <button
+              class="btn-icon"
+              title="Dismiss"
+              on:click={() => onDeleteSharedText(i)}
+            >
               <XIcon />
             </button>
           </li>
@@ -42,4 +60,3 @@
     </ul>
   {/if}
 {/if}
-

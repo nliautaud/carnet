@@ -10,7 +10,6 @@
   }
   .pill {
     display: inline-block;
-    background: var(--bg-color);
     color: var(--text-muted-color);
     border: 1.5px solid var(--border-color);
     border-radius: 50px;
@@ -18,9 +17,6 @@
     font-size: 0.8em;
     font-weight: 500;
     letter-spacing: 0.03em;
-    margin-left: 0.1em;
-    margin-top: 0.2em;
-    margin-bottom: 0.2em;
     user-select: none;
   }
 </style>

@@ -28,7 +28,7 @@
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 32px;
+    bottom: 7vh;
     z-index: 2000;
     display: flex;
     flex-direction: column;
@@ -56,12 +56,7 @@
     min-width: 220px;
   }
   .save-preview-float.override {
-    background: var(--border-color);
+    background: var(--bg-color);
     color: var(--text-color);
-  }
-  .save-preview-float:active {
-    background: var(--border-color);
-    color: var(--text-color);
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1);
   }
 </style>
