@@ -121,9 +121,7 @@
 
 <style>
   .actionbar {
-    display: flex;
     justify-content: end;
-    align-items: center;
   }
   h1 {
     font-family: var(--font-serif);

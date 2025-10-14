@@ -148,6 +148,15 @@ button:hover {
   margin-bottom: 1em;
 }
 
+.actionbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+	/* void the parent padding */
+  margin: -1em -1em 0 0;
+	transform: translateX(-.5em);
+}
+
 .checkbox {
   margin-right: 0.7em;
   accent-color: var(--text-color);

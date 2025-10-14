@@ -176,11 +176,6 @@
 {/if}
 
 <style>
-  .actionbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
   input.title {
     width: 100%;
     margin: 1em 0 1em 0;
