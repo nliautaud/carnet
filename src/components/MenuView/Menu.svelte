@@ -17,6 +17,7 @@
   import MenuActions from "./MenuActions.svelte";
   import MenuSharedTextsList from "./MenuSharedTextsList.svelte";
   import MenuTextList from "./MenuTextList.svelte";
+  import MenuOnboarding from "./MenuOnboarding.svelte";
 
   function openEditor(i) {
     currentIndex.set(i);
@@ -104,13 +105,17 @@
   />
 {/if}
 
-<MenuTextList
-  texts={$texts}
-  selectMode={$selectMode}
-  selected={$selected}
-  onOpenEditor={openEditor}
-  onSelectItem={handleSelectItem}
-/>
+{#if $texts.length === 0}
+  <MenuOnboarding />
+{:else}
+  <MenuTextList
+    texts={$texts}
+    selectMode={$selectMode}
+    selected={$selected}
+    onOpenEditor={openEditor}
+    onSelectItem={handleSelectItem}
+  />
+{/if}
 
 <MenuSharedTextsList
   sharedTexts={$sharedTexts}

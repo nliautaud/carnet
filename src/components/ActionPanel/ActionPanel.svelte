@@ -2,13 +2,13 @@
   import { TextService } from "../../services/textService.js";
   import { ThemeService } from "../../services/themeService.js";
   import {
-      currentIndex,
-      mode,
-      previewMode,
-      selectMode,
-      selected,
-      sharedTexts,
-      texts,
+    currentIndex,
+    mode,
+    previewMode,
+    selectMode,
+    selected,
+    sharedTexts,
+    texts,
   } from "../../stores/appStore.js";
   import ListCheckIcon from "../icons/listCheck.svelte";
   import MenuIcon from "../icons/menu.svelte";
@@ -73,16 +73,18 @@
         >
           <PlusIcon />
         </button>
-        <button
-          class="btn-icon"
-          id="select-mode-btn"
-          on:click={handleToggleSelectMode}
-          aria-label="Toggle select mode"
-          aria-pressed={$selectMode}
-          class:active={$selectMode}
-        >
-          <ListCheckIcon />
-        </button>
+        {#if $texts.length > 0}
+          <button
+            class="btn-icon"
+            id="select-mode-btn"
+            on:click={handleToggleSelectMode}
+            aria-label="Toggle select mode"
+            aria-pressed={$selectMode}
+            class:active={$selectMode}
+          >
+            <ListCheckIcon />
+          </button>
+        {/if}
       {/if}
       {#if $currentIndex !== null && !$previewMode}
         <button
