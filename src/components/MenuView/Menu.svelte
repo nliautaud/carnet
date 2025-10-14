@@ -1,28 +1,43 @@
 <script>
-  import { SharedTextService, TextService } from '../../services/textService.js';
-  import { currentIndex, mode, newlySharedIndexes, previewMode, selectMode, selected, sharedTexts, texts } from '../../stores/appStore.js';
-  import MenuActions from './MenuActions.svelte';
-  import MenuSharedTextsList from './MenuSharedTextsList.svelte';
-  import MenuTextList from './MenuTextList.svelte';
+  import {
+      SharedTextService,
+      TextService,
+  } from "../../services/textService.js";
+  import {
+      currentIndex,
+      mode,
+      newlySharedIndexes,
+      previewMode,
+      selectMode,
+      selected,
+      sharedTexts,
+      texts,
+  } from "../../stores/appStore.js";
+  import ActionPanel from "../ActionPanel/ActionPanel.svelte";
+  import MenuActions from "./MenuActions.svelte";
+  import MenuSharedTextsList from "./MenuSharedTextsList.svelte";
+  import MenuTextList from "./MenuTextList.svelte";
 
   function openEditor(i) {
     currentIndex.set(i);
-    mode.set('mode-lecture');
+    mode.set("mode-lecture");
   }
 
   function openSharedPreview(i) {
     currentIndex.set(i);
-    mode.set('mode-lecture');
+    mode.set("mode-lecture");
     previewMode.set(true);
   }
 
   function deleteSharedText(i) {
-    sharedTexts.update(shared => SharedTextService.removeSharedText(shared, i));
-    
+    sharedTexts.update((shared) =>
+      SharedTextService.removeSharedText(shared, i),
+    );
+
     // Update newly shared indexes
-    newlySharedIndexes.update(indexes => {
+    newlySharedIndexes.update((indexes) => {
       const newIndexes = new Set();
-      indexes.forEach(index => {
+      indexes.forEach((index) => {
         if (index > i) {
           newIndexes.add(index - 1);
         } else if (index < i) {
@@ -31,17 +46,17 @@
       });
       return newIndexes;
     });
-    
+
     // Handle preview mode cleanup
     if ($previewMode && $currentIndex === i) {
       currentIndex.set(null);
       previewMode.set(false);
-      mode.set('mode-lecture');
+      mode.set("mode-lecture");
     }
   }
 
   function handleSelectItem(i) {
-    selected.update(selectedSet => {
+    selected.update((selectedSet) => {
       const newSet = new Set(selectedSet);
       if (newSet.has(i)) {
         newSet.delete(i);
@@ -54,7 +69,9 @@
 
   function handleDeleteSelection() {
     if ($selected.size > 0) {
-      texts.update(textsArray => TextService.deleteTexts(textsArray, $selected));
+      texts.update((textsArray) =>
+        TextService.deleteTexts(textsArray, $selected),
+      );
       selected.set(new Set());
       selectMode.set(false);
     }
@@ -62,16 +79,20 @@
 
   async function handleShareSelection() {
     if ($selected.size > 0) {
-      const selectedTexts = Array.from($selected).map(i => $texts[i]);
+      const selectedTexts = Array.from($selected).map((i) => $texts[i]);
       const shareUrl = SharedTextService.createShareUrl(selectedTexts);
       const success = await SharedTextService.copyToClipboard(shareUrl);
-      
+
       if (success) {
         alert(`Share link copied to clipboard! (${$selected.size} texts)`);
       }
     }
   }
 </script>
+
+<div class="actionbar">
+  <ActionPanel />
+</div>
 
 <h1>Carnet</h1>
 
@@ -99,11 +120,16 @@
 />
 
 <style>
+  .actionbar {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+  }
   h1 {
     font-family: var(--font-serif);
     font-size: 2em;
     font-weight: 600;
     text-align: center;
-    margin: 2em 0;
+    margin: 2em 0 0 0;
   }
 </style>

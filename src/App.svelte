@@ -7,20 +7,18 @@
   import { ThemeService } from "./services/themeService.js";
 
   import {
-    texts,
-    sharedTexts,
-    currentIndex,
-    mode,
-    theme,
-    previewMode,
-    newlySharedIndexes,
+      currentIndex,
+      mode,
+      newlySharedIndexes,
+      previewMode,
+      sharedTexts,
+      texts,
+      theme,
   } from "./stores/appStore.js";
 
-  import TextEditor from "./components/TextView/TextView.svelte";
   import TextMenu from "./components/MenuView/Menu.svelte";
-  import ActionPanel from "./components/ActionPanel/ActionPanel.svelte";
-
-  // Utils
+  import TextEditor from "./components/TextView/TextView.svelte";
+// Utils
   import { updateMeta } from "./lib/meta.js";
 
   // Initialize app
@@ -103,12 +101,39 @@
     <TextMenu />
   {/if}
 </main>
-<ActionPanel />
 
 <style>
   main {
+    position: relative;
+    margin: 2em;
     padding: 2em 1.5em;
-    max-width: 650px;
-    margin: auto;
+    background: var(--bg-color);
+    border-radius: 1em;
+    color: var(--text-color);
+    transition:
+      background 0.3s,
+      color 0.3s;
+      min-height: 1000px;
+  }
+  
+  /* On smaller heights, make main full height */
+  @media (max-height: 1200px) {
+    main {
+      flex: 1;
+      min-height: auto;
+    }
+    :global(#app),
+    :global(body) {
+      align-items: stretch;
+    }
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 750px) {
+    main {
+      border-radius: 0;
+      margin: 0;
+      min-height: 100vh;
+    }
   }
 </style>

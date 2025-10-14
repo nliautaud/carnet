@@ -1,188 +1,189 @@
 button {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 button,
 input {
-    font-family: inherit;
-    font-weight: inherit;
+	font-family: inherit;
+		font-weight: inherit;
 }
 
 .text-list {
-    font-family: var(--font-serif);
-    font-weight: 500;
-    list-style: none;
-    padding: 0;
-    margin: 0 0 3em 0;
+	font-family: var(--font-serif);
+		font-weight: 500;
+		list-style: none;
+		padding: 0;
+		margin: 0 0 3em 0;
 }
 
 .text-item {
-    margin: 0.8em 0;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
+	margin: 0.8em 0;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		gap: 0.5em;
 }
+
 .text-item.muted {
-    margin: 0.5em 0;
-    opacity: 0.7;
+	margin: 0.5em 0;
+		opacity: 0.7;
 }
 
 .btn-text-item {
-    position: relative;
-    flex: 1;
-    text-align: left;
-    display: block;
-    padding: 0.6em 1em;
-    border-radius: 6px;
-    text-decoration: none;
-    color: var(--text-color);
-    border: 0px solid var(--border-color);
-    transition: background 0.2s;
-    background: var(--bg-color);
-    font-size: 1em;
-    cursor: pointer;
+	position: relative;
+		flex: 1;
+		text-align: left;
+		display: block;
+		padding: 0.6em 1em;
+		border-radius: 6px;
+		text-decoration: none;
+		color: var(--text-color);
+		border: 0px solid var(--border-color);
+		transition: background 0.2s;
+		background: none;
+			font-size: 1em;
+			cursor: pointer;
 }
+
 .btn-text-item:after {
-    border-bottom: 1px solid var(--border-color);
-    content: "";
-    display: block;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    position: absolute;
+	border-bottom: 1px solid var(--border-color);
+	content: '';
+		display: block;
+		width: 100%;
+		bottom: -.2em;
+			left: 0;
+			position: absolute;
 }
 
 .btn-text-item:hover {
-    background: var(--hover-bg);
+	background: var(--hover-bg);
 }
 
 .btn-text-item.untitled {
-    font-style: italic;
-    color: var(--text-muted-color);
+	font-style: italic;
+		color: var(--text-muted-color);
 }
 
 .btn-text-item.muted {
-    color: var(--text-muted-color);
-    font-size: .9em;
-    font-style: italic;
+	color: var(--text-muted-color);
+	font-size: 0.9em;
+		font-style: italic;
 }
 
 .btn-icon {
-    flex: none;
-    background: none;
-    border: none;
-    color: var(--text-muted-color);
-    margin-left: 0.5em;
-    cursor: pointer;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-    width: 2em;
-    height: 2em;
+	flex: none;
+		color: inherit;
+		background: none;
+			border: none;
+		cursor: pointer;
+		border-radius: 30%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: background 0.2s;
+		width: 64px;
+			height: 64px;
 }
 
 .btn-icon:hover {
-    background: var(--hover-bg);
-    color: var(--text-color);
+	background: var(--hover-bg);
+		color: var(--text-color);
 }
 
 .btn-action {
-    border: none;
-    border-radius: 1em;
-    padding: 0.3em 0.8em;
-    cursor: pointer;
-    font-size: 0.9em;
-    margin-left: 0.5em;
-    transition: background 0.2s;
+	border: none;
+	border-radius: 999px;
+		padding: 0.5em 1em;
+		cursor: pointer;
+		font-size: 0.9em;
+		margin-left: 0.5em;
+		transition: background 0.2s;
 }
 
 .btn-action:disabled {
-    background: #bdc3c7;
-    cursor: not-allowed;
+	background: #bdc3c7;
+		cursor: not-allowed;
 }
 
 .btn-share {
-    background: #3498db;
-    color: #fff;
+	background: #3498db;
+		color: #fff;
 }
 
 .btn-share:hover:not(:disabled) {
-    background: #2980b9;
+	background: #2980b9;
 }
 
 .btn-danger {
-    background: #e74c3c;
-    color: #fff;
+	background: #e74c3c;
+		color: #fff;
 }
 
 .btn-danger:hover:not(:disabled) {
-    background: #c0392b;
+	background: #c0392b;
 }
 
 .section-title {
-    font-size: 0.8em;
-    color: var(--text-muted-color);
-    margin-bottom: 0.5em;
-    font-weight: 300;
-    text-align: center;
+	font-size: 0.8em;
+		color: var(--text-muted-color);
+		margin-bottom: 0.5em;
+		font-weight: 300;
+		text-align: center;
 }
 
 .section-title.featured {
-    color: var(--text-color);
-    font-weight: 500;
+	color: var(--text-color);
+		font-weight: 500;
 }
 
 .container-featured {
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1em;
-    margin-bottom: 1em;
-    background: var(--bg-color);
+	border: 2px solid var(--border-color);
+		border-radius: 12px;
+		padding: 1em;
+		margin-bottom: 1em;
+		background: var(--bg-color);
 }
 
 .checkbox {
-    margin-right: 0.7em;
-    accent-color: var(--text-color);
-    width: 1.1em;
-    height: 1.1em;
-    vertical-align: middle;
+	margin-right: 0.7em;
+		accent-color: var(--text-color);
+		width: 1.1em;
+		height: 1.1em;
+		vertical-align: middle;
 }
 
 .text-muted {
-    color: var(--text-muted-color);
+	color: var(--text-muted-color);
 }
 
 .text-italic {
-    font-style: italic;
+	font-style: italic;
 }
 
 .flex {
-    display: flex;
+	display: flex;
 }
 
 .flex-1 {
-    flex: 1;
+	flex: 1;
 }
 
 .items-center {
-    align-items: center;
+	align-items: center;
 }
 
 .gap-sm {
-    gap: 0.5em;
+	gap: 0.5em;
 }
 
 .margin-sm {
-    margin: 0.5em 0;
+	margin: 0.5em 0;
 }
 
 .margin-md {
-    margin: 0.8em 0;
+	margin: 0.8em 0;
 }
 
 .transition {
-    transition: all 0.2s;
+	transition: all 0.2s;
 }

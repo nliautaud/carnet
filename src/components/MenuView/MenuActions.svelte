@@ -4,7 +4,7 @@
   export let onShareSelection;
 </script>
 
-<div class="flex items-center gap-sm margin-sm text-muted" style="font-size: 0.95em;">
+<div class="menu-actions flex items-center gap-sm margin-sm text-muted" style="font-size: 0.95em;">
   {#if selected.size === 0}
     <span class="flex-1">no item selected</span>
   {:else}
@@ -13,3 +13,11 @@
     <button class="btn-action btn-danger" on:click={onDeleteSelection} disabled={selected.size === 0}>delete selection</button>
   {/if}
 </div>
+<style>
+  .menu-actions {
+    margin-top: 1em;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1em
+  }
+</style>

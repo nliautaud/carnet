@@ -1,11 +1,11 @@
-import { writable } from 'svelte/store';
+import { writable } from 'svelte/store'
 
 // Application state stores
 export const texts = writable([]);
 export const sharedTexts = writable([]);
 export const currentIndex = writable(null);
 export const mode = writable('mode-lecture'); // 'mode-lecture' or 'mode-edition'
-export const theme = writable('auto'); // 'auto', 'light', 'dark'
+export const theme = writable("auto")
 export const previewMode = writable(false);
 export const selectMode = writable(false);
 export const selected = writable(new Set());

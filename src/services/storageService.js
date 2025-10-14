@@ -1,3 +1,5 @@
+import { ThemeService } from "./themeService"
+
 export class StorageService {
   static KEYS = {
     TEXTS: 'texts',
@@ -43,10 +45,10 @@ export class StorageService {
 
   static getTheme() {
     try {
-      return localStorage.getItem(this.KEYS.THEME) || 'auto';
+      return localStorage.getItem(this.KEYS.THEME) || ThemeService.THEMES.AUTO;
     } catch (error) {
       console.error('Error loading theme from storage:', error);
-      return 'auto';
+      return ThemeService.THEMES.AUTO;
     }
   }
 

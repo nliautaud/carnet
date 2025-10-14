@@ -1,4 +1,6 @@
 <script>
+    import XIcon from "../icons/x.svelte";
+
   export let sharedTexts = [];
   export let newlySharedIndexes = new Set();
   export let onOpenSharedPreview;
@@ -15,7 +17,7 @@
           <li class="text-item">
             <button type="button" class="btn-text-item muted" on:click={() => onOpenSharedPreview(i)}>{t.title || 'Sans titre'}</button>
             <button class="btn-icon" title="Dismiss" on:click={() => onDeleteSharedText(i)}>
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <XIcon />
             </button>
           </li>
         {/if}
@@ -32,7 +34,7 @@
           <li class="text-item muted">
             <button type="button" class="btn-text-item muted" on:click={() => onOpenSharedPreview(i)}>{t.title || 'Sans titre'}</button>
             <button class="btn-icon" title="Dismiss" on:click={() => onDeleteSharedText(i)}>
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><line x1="5" y1="5" x2="15" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="15" y1="5" x2="5" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <XIcon />
             </button>
           </li>
         {/if}

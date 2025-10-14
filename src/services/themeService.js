@@ -1,15 +1,20 @@
 export class ThemeService {
-  static THEMES = ['auto', 'light', 'dark'];
+  static THEMES = Object.freeze({
+    AUTO: 'auto',
+    LIGHT: 'light',
+    DARK: 'dark'
+  });
   static THEME_ICONS = ['🌗', '☀️', '🌙'];
 
   static getNextTheme(currentTheme) {
-    const currentIndex = this.THEMES.indexOf(currentTheme);
-    const nextIndex = (currentIndex + 1) % this.THEMES.length;
-    return this.THEMES[nextIndex];
+    const themesArray = Object.values(this.THEMES)
+    const currentIndex = themesArray.indexOf(currentTheme)
+    const nextIndex = (currentIndex + 1) % themesArray.length
+    return themesArray[nextIndex];
   }
-
   static getThemeIcon(theme) {
-    const index = this.THEMES.indexOf(theme);
+    const themesArray = Object.values(this.THEMES)
+    const index = themesArray.indexOf(theme);
     return this.THEME_ICONS[index] || '🌗';
   }
 

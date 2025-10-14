@@ -1,22 +1,29 @@
 <script>
-  import { onMount } from 'svelte';
-  import { updateMeta } from '../../lib/meta.js';
-  import { TextService } from '../../services/textService.js';
-  import { currentIndex, mode, previewMode, sharedTexts, texts } from '../../stores/appStore.js';
-  import CloseButton from '../CloseButton.svelte';
-  import PreviewPill from './PreviewPill.svelte';
-  import SavePreviewButtons from './SavePreviewButtons.svelte';
+  import { onMount } from "svelte";
+  import { updateMeta } from "../../lib/meta.js";
+  import { TextService } from "../../services/textService.js";
+  import {
+      currentIndex,
+      mode,
+      previewMode,
+      sharedTexts,
+      texts,
+  } from "../../stores/appStore.js";
+  import ActionPanel from "../ActionPanel/ActionPanel.svelte";
+  import ChevronLeftIcon from "../icons/chevronLeft.svelte";
+  import PreviewPill from "./PreviewPill.svelte";
+  import SavePreviewButtons from "./SavePreviewButtons.svelte";
 
-  let title = '';
-  let content = '';
+  let title = "";
+  let content = "";
   let titleInput;
   let contentDiv;
 
   // Reactive values from stores
   $: currentTexts = $previewMode && $sharedTexts.length ? $sharedTexts : $texts;
-  $: if (currentTexts && typeof $currentIndex === 'number') {
-    title = currentTexts[$currentIndex]?.title || '';
-    content = currentTexts[$currentIndex]?.content || '';
+  $: if (currentTexts && typeof $currentIndex === "number") {
+    title = currentTexts[$currentIndex]?.title || "";
+    content = currentTexts[$currentIndex]?.content || "";
   }
 
   function handleTitleInput(e) {
@@ -33,55 +40,66 @@
 
   function save() {
     if ($currentIndex !== null) {
-      const titleEl = document.getElementById('title');
-      const contentEl = document.getElementById('content');
-      const title = titleEl && 'value' in titleEl ? titleEl.value : '';
-      const content = contentEl && 'innerHTML' in contentEl ? contentEl.innerHTML : '';
-      
-      texts.update(textsArray => 
-        TextService.saveText(textsArray, $currentIndex, title, content)
+      const titleEl = document.getElementById("title");
+      const contentEl = document.getElementById("content");
+      const title = titleEl && "value" in titleEl ? titleEl.value : "";
+      const content =
+        contentEl && "innerHTML" in contentEl ? contentEl.innerHTML : "";
+
+      texts.update((textsArray) =>
+        TextService.saveText(textsArray, $currentIndex, title, content),
       );
     }
   }
 
   function onClose() {
     currentIndex.set(null);
-    mode.set('mode-lecture');
+    mode.set("mode-lecture");
     previewMode.set(false);
     // Clean URL
     const url = new URL(window.location.href);
-    url.searchParams.delete('share');
+    url.searchParams.delete("share");
     window.history.replaceState({}, document.title, url.pathname + url.search);
     updateMeta();
   }
 
   function onSavePreviewText(detail) {
-    if ($previewMode && $sharedTexts.length && typeof $currentIndex === 'number') {
+    if (
+      $previewMode &&
+      $sharedTexts.length &&
+      typeof $currentIndex === "number"
+    ) {
       const toSave = $sharedTexts[$currentIndex];
-      const existingIdx = TextService.findTextIndexByTitle(toSave.title, $texts);
+      const existingIdx = TextService.findTextIndexByTitle(
+        toSave.title,
+        $texts,
+      );
       let newCurrentIndex;
-      
-      if (detail === 'override' && existingIdx !== -1) {
-        texts.update(textsArray => {
+
+      if (detail === "override" && existingIdx !== -1) {
+        texts.update((textsArray) => {
           textsArray[existingIdx] = toSave;
           return textsArray;
         });
         newCurrentIndex = existingIdx;
-      } else if (detail === 'new' && existingIdx !== -1) {
-        const newTitle = TextService.generateUniqueTitle(toSave.title || 'Sans titre', $texts);
-        texts.update(textsArray => {
+      } else if (detail === "new" && existingIdx !== -1) {
+        const newTitle = TextService.generateUniqueTitle(
+          toSave.title || "Sans titre",
+          $texts,
+        );
+        texts.update((textsArray) => {
           const newTexts = [...textsArray, { ...toSave, title: newTitle }];
           return newTexts;
         });
         newCurrentIndex = $texts.length;
       } else {
-        texts.update(textsArray => TextService.addText(textsArray, toSave));
+        texts.update((textsArray) => TextService.addText(textsArray, toSave));
         newCurrentIndex = $texts.length;
       }
-      
+
       // Remove shared text and clean up
-      sharedTexts.update(shared => 
-        TextService.deleteText(shared, $currentIndex)
+      sharedTexts.update((shared) =>
+        TextService.deleteText(shared, $currentIndex),
       );
       currentIndex.set(newCurrentIndex);
       previewMode.set(false);
@@ -90,25 +108,30 @@
   }
 
   // Reactive statement to handle mode changes
-  $: if ($mode === 'mode-edition' && titleInput) {
+  $: if ($mode === "mode-edition" && titleInput) {
     titleInput.focus();
   }
 
   // Ensure body class is in sync with mode
   $: {
-    if (typeof document !== 'undefined') {
+    if (typeof document !== "undefined") {
       document.body.className = $mode;
     }
   }
 
   onMount(() => {
-    if (currentTexts && typeof $currentIndex === 'number') {
+    if (currentTexts && typeof $currentIndex === "number") {
       updateMeta(currentTexts[$currentIndex]);
     }
   });
 </script>
 
-<CloseButton onClose={onClose} />
+<div class="actionbar">
+  <button class="btn-icon close" on:click={onClose} aria-label="Fermer">
+    <ChevronLeftIcon />
+  </button>
+  <ActionPanel />
+</div>
 
 {#if $previewMode}
   <PreviewPill />
@@ -120,11 +143,11 @@
   placeholder="Sans titre"
   bind:this={titleInput}
   bind:value={title}
-  readonly={$mode !== 'mode-edition'}
+  readonly={$mode !== "mode-edition"}
   on:input={handleTitleInput}
 />
 
-{#if $mode === 'mode-edition'}
+{#if $mode === "mode-edition"}
   <div
     id="content"
     bind:this={contentDiv}
@@ -142,20 +165,22 @@
 {/if}
 
 {#if $previewMode}
-  {#if currentTexts && typeof $currentIndex === 'number'}
-    {@const previewTitle = currentTexts[$currentIndex]?.title || ''}
+  {#if currentTexts && typeof $currentIndex === "number"}
+    {@const previewTitle = currentTexts[$currentIndex]?.title || ""}
     {@const existingIdx = $texts.findIndex(
       (t) =>
-        t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase()
+        t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase(),
     )}
-    <SavePreviewButtons
-      {existingIdx}
-      onSavePreviewText={onSavePreviewText}
-    />
+    <SavePreviewButtons {existingIdx} {onSavePreviewText} />
   {/if}
 {/if}
 
 <style>
+  .actionbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   input.title {
     width: 100%;
     margin: 2em 0 1em 0;
@@ -182,7 +207,7 @@
 
   #title,
   #content {
-    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
     border-left: 3px solid transparent;
     transition: border-color 0.2s;
   }

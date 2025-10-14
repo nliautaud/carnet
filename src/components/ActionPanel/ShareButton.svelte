@@ -1,9 +1,10 @@
 <script>
-  import { compress } from '../../lib/compression.js';
-  import { SharedTextService } from '../../services/textService.js';
+  import { compress } from "../../lib/compression.js";
+  import { SharedTextService } from "../../services/textService.js";
+  import ShareIcon from "../icons/share.svelte";
 
-  export let title = '';
-  export let content = '';
+  export let title = "";
+  export let content = "";
 
   let copying = false;
 
@@ -11,7 +12,7 @@
     const data = JSON.stringify([{ title, content }]);
     const encoded = compress(data);
     const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encoded}`;
-    
+
     const success = await SharedTextService.copyToClipboard(shareUrl);
     if (success) {
       copying = true;
@@ -22,10 +23,11 @@
 
 <button
   type="button"
+  class="btn-icon"
   on:click={handleShare}
   aria-label="Share this text"
 >
-  🔗
+  <ShareIcon />
   {#if copying}
     <span class="copied-label">Copied!</span>
   {/if}

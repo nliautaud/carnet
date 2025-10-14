@@ -1,32 +1,48 @@
 <script>
-  import { ThemeService } from '../../services/themeService.js';
-  import { TextService } from '../../services/textService.js';
-  import { texts, currentIndex, mode, theme, previewMode, selectMode, selected, sharedTexts } from '../../stores/appStore.js';
-  import ShareButton from './ShareButton.svelte';
+  import { TextService } from "../../services/textService.js";
+  import { ThemeService } from "../../services/themeService.js";
+  import {
+      currentIndex,
+      mode,
+      previewMode,
+      selectMode,
+      selected,
+      sharedTexts,
+      texts,
+      theme,
+  } from "../../stores/appStore.js";
+  import ListCheckIcon from "../icons/listCheck.svelte";
+  import MenuIcon from "../icons/menu.svelte";
+  import ModeIcon from "../icons/mode.svelte";
+  import PlusIcon from "../icons/plus.svelte";
+  import ThemeIcon from "../icons/theme.svelte";
+  import XIcon from "../icons/x.svelte";
+  import ShareButton from "./ShareButton.svelte";
 
   let isOpen = false;
 
-  $: themeIcon = ThemeService.getThemeIcon($theme);
+  export let classes = "";
+
   $: currentTexts = $previewMode && $sharedTexts.length ? $sharedTexts : $texts;
 
   function togglePanel() {
     isOpen = !isOpen;
     if (!isOpen) {
       selectMode.set(false);
-      mode.set('mode-lecture');
+      mode.set("mode-lecture");
     }
   }
 
   function newText() {
     const newText = TextService.createNewText();
-    texts.update(textsArray => TextService.addText(textsArray, newText));
+    texts.update((textsArray) => TextService.addText(textsArray, newText));
     openEditor($texts.length - 1);
-    setMode('mode-edition');
+    setMode("mode-edition");
   }
 
   function openEditor(i) {
     currentIndex.set(i);
-    setMode('mode-lecture');
+    setMode("mode-lecture");
   }
 
   function setMode(m) {
@@ -40,7 +56,7 @@
   }
 
   function handleToggleMode() {
-    setMode($mode === 'mode-edition' ? 'mode-lecture' : 'mode-edition');
+    setMode($mode === "mode-edition" ? "mode-lecture" : "mode-edition");
   }
 
   function handleToggleTheme() {
@@ -49,157 +65,129 @@
   }
 
   function handleToggleSelectMode() {
-    selectMode.update(mode => !mode);
+    selectMode.update((mode) => !mode);
     if ($selectMode) {
       selected.set(new Set());
     }
   }
 </script>
 
-<div id="action-panel" class:is-open={isOpen}>
-  <div class="actions" class:visible={isOpen}>
-    {#if $currentIndex === null}
-      <button id="new-text-btn" on:click={newText} aria-label="New text">＋</button>
-      <button 
-        id="select-mode-btn" 
-        on:click={handleToggleSelectMode} 
-        aria-label="Toggle select mode" 
-        aria-pressed={$selectMode} 
-        class:active={$selectMode}
-      >
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style="vertical-align:middle;">
-          <rect x="3" y="3" width="16" height="16" rx="4" stroke="currentColor" stroke-width="2" fill={$selectMode ? 'currentColor' : 'none'} />
-          <polyline points="7,12 10,15 15,8" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="opacity:{$selectMode ? 1 : 0};transition:opacity 0.15s;" />
-        </svg>
-      </button>
-    {/if}
-    {#if $currentIndex !== null && !$previewMode}
+<div class="action-panel {classes}">
+  <div class="panel" class:is-open={isOpen}>
+    <div class="actions" class:visible={isOpen}>
+      {#if $currentIndex === null}
+        <button
+          class="btn-icon"
+          id="new-text-btn"
+          on:click={newText}
+          aria-label="New text"
+        >
+          <PlusIcon />
+        </button>
+        <button
+          class="btn-icon"
+          id="select-mode-btn"
+          on:click={handleToggleSelectMode}
+          aria-label="Toggle select mode"
+          aria-pressed={$selectMode}
+          class:active={$selectMode}
+        >
+          <ListCheckIcon />
+        </button>
+      {/if}
+      {#if $currentIndex !== null && !$previewMode}
+        <button
+          class="btn-icon"
+          id="toggle-mode"
+          on:click={handleToggleMode}
+          aria-label={$mode === "mode-edition"
+            ? "Switch to view mode"
+            : "Switch to edit mode"}
+        >
+          <ModeIcon />
+        </button>
+      {/if}
+      {#if $currentIndex !== null}
+        <ShareButton
+          title={currentTexts[$currentIndex || 0]?.title}
+          content={currentTexts[$currentIndex || 0]?.content}
+        />
+      {/if}
       <button
-        id="toggle-mode"
-        on:click={handleToggleMode}
-        aria-label={$mode === 'mode-edition'
-          ? 'Switch to view mode'
-          : 'Switch to edit mode'}
+        class="btn-icon"
+        id="toggle-theme"
+        on:click={handleToggleTheme}
+        aria-label="Toggle theme"
       >
-        {$mode === 'mode-edition' ? '👁' : '✏️'}
-      </button>
-    {/if}
-    {#if $currentIndex !== null}
-      <ShareButton
-        title={currentTexts[$currentIndex || 0]?.title}
-        content={currentTexts[$currentIndex || 0]?.content}
-      />
-    {/if}
-    <button id="toggle-theme" on:click={handleToggleTheme} aria-label="Toggle theme"
-      >{themeIcon}</button
+        <ThemeIcon /></button
+      >
+    </div>
+    <button
+      id="toggle-panel"
+      class="btn-icon"
+      on:click={togglePanel}
+      aria-label={isOpen ? "Close action panel" : "Open action panel"}
     >
+      {#if isOpen}
+        <XIcon />
+      {:else}
+        <MenuIcon />
+      {/if}
+    </button>
   </div>
-  <button
-    id="toggle-panel"
-    on:click={togglePanel}
-    aria-label={isOpen ? 'Close action panel' : 'Open action panel'}
-  >
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style="vertical-align:middle"
-    >
-      <rect x="4" y="7" width="16" height="2" rx="1" fill="currentColor" />
-      <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor" />
-      <rect x="4" y="15" width="16" height="2" rx="1" fill="currentColor" />
-    </svg>
-  </button>
 </div>
 
 <style>
-  #action-panel {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+  .action-panel {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+  }
+  .panel {
+    display: flex;
     align-items: center;
-    border-radius: 50px;
+    gap: 0.5em;
     z-index: 1000;
-    transition:
-      background 0.2s,
-      border 0.2s,
-      box-shadow 0.2s;
     overflow: hidden;
-  }
-  #action-panel:not(.is-open) {
     background: none;
-    box-shadow: none;
-  }
-  #action-panel.is-open {
-    background: var(--panel-bg);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   .actions {
     display: flex;
-    flex-direction: column;
     align-items: center;
     opacity: 0;
     pointer-events: none;
-    max-height: 0;
+    max-width: 0;
     transition:
       opacity 0.2s,
-      max-height 0.2s;
+      max-width 0.2s;
+    transition-timing-function: cubic-bezier(
+      0.47,
+      1.64,
+      0.41,
+      0.8
+    ); /* in-spring-like */
     overflow: hidden;
   }
   .actions.visible {
     opacity: 1;
     pointer-events: auto;
-    max-height: none;
+    max-width: 500px;
+    border-radius: 999px;
+    background: var(--panel-bg);
   }
-  :global(#action-panel button) {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.4em;
-    color: var(--text-color);
-    transition:
-      background 0.2s,
-      border 0.2s;
-  }
-  :global(#action-panel.is-open button) {
-    background: none;
-    border: none;
-  }
-  :global(#action-panel:not(.is-open) button) {
-    background: none;
-    border: none;
-    box-shadow: none;
-  }
-  :global(#action-panel button:last-child) {
-    border-radius: 0 0 50px 50px;
-  }
-  :global(#action-panel button:first-child) {
-    border-radius: 50px 50px 0 0;
-  }
-  :global(#action-panel button:active) {
+  :global(.panel button:active) {
     animation: click-bounce 0.32s cubic-bezier(0.47, 1.64, 0.41, 0.8);
   }
-  :global(#action-panel .actions.visible button) {
+  :global(.panel .actions.visible button) {
     animation: bounce-in 0.35s cubic-bezier(0.47, 1.64, 0.41, 0.8) both;
     --delay: 0.08s;
   }
-  :global(#action-panel .actions.visible button:nth-child(3)) {
+  :global(.panel .actions.visible button:nth-child(1)) {
     animation-delay: 0;
   }
-  :global(#action-panel .actions.visible button:nth-child(2)) {
+  :global(.panel .actions.visible button:nth-child(2)) {
     animation-delay: calc(var(--delay) * 1);
   }
-  :global(#action-panel .actions.visible button:nth-child(1)) {
+  :global(.panel .actions.visible button:nth-child(3)) {
     animation-delay: calc(var(--delay) * 2);
   }
   @keyframes bounce-in {
