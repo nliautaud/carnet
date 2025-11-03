@@ -21,7 +21,7 @@
 :root {
   /* Light mode */
   --app-bg-color: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  --bg-color: #ebedee;
+  --bg-color: #fdfbfb;
   --bg-color-gradient: linear-gradient(160deg, #fdfbfb 0%, #ebedee 100%);
   --text-color: #111;
   --text-muted-color: #666;
@@ -43,6 +43,9 @@
   --font-system: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-serif: "Newsreader", Georgia, "Times New Roman", Times, serif;
+
+  /* Content font (can be changed by appearance settings) */
+  --content-font: var(--font-serif);
 }
 
 body[data-theme="dark"] {

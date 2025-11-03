@@ -1,5 +1,6 @@
 import { StorageService } from './storageService.js'
 import { compress, decompress } from '../lib/compression.js'
+import { AppearanceService } from './appearanceService.js'
 
 // Text management service
 export class TextService {
@@ -10,12 +11,32 @@ export class TextService {
   }
 
   static createNewText() {
-    return { title: '', content: '' }
+    return {
+      title: '',
+      content: '',
+      font: AppearanceService.FONTS.SERIF,
+      textSize: AppearanceService.TEXT_SIZE_DEFAULT
+    }
   }
 
-  static saveText(texts, index, title, content) {
+  static ensureTextHasAppearance(text) {
+    // Migrate old texts that don't have appearance settings
+    return {
+      ...text,
+      font: text.font || AppearanceService.FONTS.SERIF,
+      textSize: text.textSize || AppearanceService.TEXT_SIZE_DEFAULT
+    }
+  }
+
+  static saveText(texts, index, title, content, appearance) {
     if (index !== null && index >= 0 && index < texts.length) {
-      texts[index] = { title, content }
+      const existingText = texts[index]
+      texts[index] = {
+        title,
+        content,
+        font: appearance?.font ?? existingText.font ?? AppearanceService.FONTS.SERIF,
+        textSize: appearance?.textSize ?? existingText.textSize ?? AppearanceService.TEXT_SIZE_DEFAULT
+      }
       StorageService.setTexts(texts)
       return texts
     }

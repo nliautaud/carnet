@@ -1,4 +1,5 @@
 import { ThemeService } from "./themeService"
+import { AppearanceService } from "./appearanceService"
 
 export class StorageService {
   static KEYS = {

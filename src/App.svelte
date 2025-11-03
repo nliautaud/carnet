@@ -3,7 +3,7 @@
   import "./app.css";
 
   import { StorageService } from "./services/storageService.js";
-  import { SharedTextService } from "./services/textService.js";
+  import { SharedTextService, TextService } from "./services/textService.js";
   import { ThemeService } from "./services/themeService.js";
 
   import {
@@ -18,7 +18,8 @@
 
   import TextMenu from "./components/MenuView/Menu.svelte";
   import TextEditor from "./components/TextView/TextView.svelte";
-// Utils
+  import AppearancePanel from "./components/AppearancePanel.svelte";
+  // Utils
   import { updateMeta } from "./lib/meta.js";
 
   // Initialize app
@@ -27,10 +28,21 @@
   });
 
   async function initializeApp() {
-    // Load data from storage
-    texts.set(StorageService.getTexts());
-    sharedTexts.set(StorageService.getSharedTexts());
+    // Load data from storage and migrate old texts
+    const loadedTexts = StorageService.getTexts().map(TextService.ensureTextHasAppearance);
+    const loadedSharedTexts = StorageService.getSharedTexts().map(TextService.ensureTextHasAppearance);
+    
+    texts.set(loadedTexts);
+    sharedTexts.set(loadedSharedTexts);
     theme.set(StorageService.getTheme());
+
+    // Save migrated texts if needed
+    if (loadedTexts.length > 0) {
+      StorageService.setTexts(loadedTexts);
+    }
+    if (loadedSharedTexts.length > 0) {
+      StorageService.setSharedTexts(loadedSharedTexts);
+    }
 
     // Apply initial theme and mode
     ThemeService.applyTheme($theme);
@@ -102,6 +114,8 @@
   {/if}
 </main>
 
+<AppearancePanel />
+
 <style>
   main {
     position: relative;
@@ -112,8 +126,10 @@
     color: var(--text-color);
     transition:
       background 0.3s,
-      color 0.3s;
-      min-height: 1000px;
+      color 0.3s,
+      transform 0.3s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+    min-height: 1000px;
+    transform: translateX(var(--content-shift, 0));
   }
   
   /* On smaller heights, make main full height */

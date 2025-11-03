@@ -10,11 +10,13 @@
     sharedTexts,
     texts,
   } from "../../stores/appStore.js";
+  import { appearancePanelOpen } from "../../stores/appearance.js";
   import ListCheckIcon from "../icons/listCheck.svelte";
   import MenuIcon from "../icons/menu.svelte";
   import ModeIcon from "../icons/mode.svelte";
   import PlusIcon from "../icons/plus.svelte";
   import XIcon from "../icons/x.svelte";
+  import PaletteIcon from "../icons/palette.svelte";
   import ShareButton from "./ShareButton.svelte";
   import ThemeButton from "./ThemeButton.svelte";
 
@@ -58,6 +60,10 @@
     if ($selectMode) {
       selected.set(new Set());
     }
+  }
+
+  function handleToggleAppearance() {
+    appearancePanelOpen.update((open) => !open);
   }
 </script>
 
@@ -103,6 +109,15 @@
           title={currentTexts[$currentIndex || 0]?.title}
           content={currentTexts[$currentIndex || 0]?.content}
         />
+        <button
+          class="btn-icon"
+          on:click={handleToggleAppearance}
+          aria-label="Appearance settings"
+          aria-pressed={$appearancePanelOpen}
+          class:active={$appearancePanelOpen}
+        >
+          <PaletteIcon />
+        </button>
       {/if}
       <ThemeButton />
     </div>

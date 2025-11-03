@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
   import { updateMeta } from "../../lib/meta.js";
   import { TextService } from "../../services/textService.js";
+  import { AppearanceService } from "../../services/appearanceService.js";
   import {
       currentIndex,
       mode,
@@ -9,6 +10,7 @@
       sharedTexts,
       texts,
   } from "../../stores/appStore.js";
+  import { currentFont, currentTextSize, appearancePanelOpen } from "../../stores/appearance.js";
   import ActionPanel from "../ActionPanel/ActionPanel.svelte";
   import ChevronLeftIcon from "../icons/chevronLeft.svelte";
   import PreviewPill from "./PreviewPill.svelte";
@@ -22,8 +24,19 @@
   // Reactive values from stores
   $: currentTexts = $previewMode && $sharedTexts.length ? $sharedTexts : $texts;
   $: if (currentTexts && typeof $currentIndex === "number") {
-    title = currentTexts[$currentIndex]?.title || "";
-    content = currentTexts[$currentIndex]?.content || "";
+    const currentText = currentTexts[$currentIndex];
+    title = currentText?.title || "";
+    content = currentText?.content || "";
+    
+    // Load appearance settings from current text
+    currentFont.set(currentText?.font || AppearanceService.FONTS.SERIF);
+    currentTextSize.set(currentText?.textSize || AppearanceService.TEXT_SIZE_DEFAULT);
+  }
+
+  // Apply appearance settings when they change
+  $: {
+    AppearanceService.applyFont($currentFont);
+    AppearanceService.applyTextSize($currentTextSize);
   }
 
   function handleTitleInput(e) {
@@ -46,8 +59,13 @@
       const content =
         contentEl && "innerHTML" in contentEl ? contentEl.innerHTML : "";
 
+      const appearance = {
+        font: $currentFont,
+        textSize: $currentTextSize
+      };
+
       texts.update((textsArray) =>
-        TextService.saveText(textsArray, $currentIndex, title, content),
+        TextService.saveText(textsArray, $currentIndex, title, content, appearance),
       );
     }
   }
@@ -56,6 +74,7 @@
     currentIndex.set(null);
     mode.set("mode-lecture");
     previewMode.set(false);
+    appearancePanelOpen.set(false);
     // Clean URL
     const url = new URL(window.location.href);
     url.searchParams.delete("share");
@@ -180,7 +199,7 @@
     width: 100%;
     margin: 1em 0 1em 0;
     padding: 0.5rem;
-    font-size: 1.75em;
+    font-size: calc(var(--content-font-size, 22px) * 1.45);
     font-weight: 600;
     border: none;
     background: transparent;
@@ -191,10 +210,11 @@
   }
   #content {
     min-height: 3em;
-    font-size: 1.2em;
+    font-size: var(--content-font-size, 22px);
     padding: 0.5rem;
     margin-bottom: 20vh;
     color: var(--text-color);
+    line-height: 1.6;
   }
   #content:focus {
     outline: none;
@@ -202,7 +222,7 @@
 
   #title,
   #content {
-    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-family: var(--content-font);
     border-left: 3px solid transparent;
     transition: border-color 0.2s;
   }

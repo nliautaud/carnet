@@ -1,4 +1,5 @@
 <script>
+  import { AppearanceService } from "../../services/appearanceService.js";
   import SquareIcon from "../icons/square.svelte";
   import SquareCheckFilledIcon from "../icons/squareCheckFilled.svelte";
 
@@ -7,6 +8,10 @@
   export let selected = new Set();
   export let onOpenEditor;
   export let onSelectItem;
+
+  function getFontFamily(text) {
+    return AppearanceService.getFontFamily(text.font || AppearanceService.FONTS.SERIF);
+  }
 </script>
 
 <ul class="text-list">
@@ -30,6 +35,7 @@
         type="button"
         on:click={() => !selectMode && onOpenEditor(i)}
         class="btn-text-item {t.title ? '' : 'untitled'}"
+        style="font-family: {getFontFamily(t)}"
         disabled={selectMode}
       >
         {t.title || "Sans titre"}
