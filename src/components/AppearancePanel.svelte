@@ -132,6 +132,16 @@
     document.documentElement.style.setProperty("--content-shift", "0px");
   }
 
+  function handleClickOutside(event) {
+    if ($appearancePanelOpen && panelElement && !panelElement.contains(event.target)) {
+      // Check if the click was on the appearance button itself
+      const appearanceButton = document.querySelector('[aria-label="Appearance settings"]');
+      if (appearanceButton && !appearanceButton.contains(event.target)) {
+        handleClose();
+      }
+    }
+  }
+
   onMount(() => {
     // Initial calculation
     calculatePosition();
@@ -141,6 +151,9 @@
       calculatePosition();
     };
     window.addEventListener("resize", handleResize);
+
+    // Listen to clicks outside the panel
+    document.addEventListener("click", handleClickOutside);
 
     // Observe content changes with ResizeObserver
     const mainElement = document.querySelector("main");
@@ -153,6 +166,7 @@
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("click", handleClickOutside);
       if (resizeObserver) {
         resizeObserver.disconnect();
       }

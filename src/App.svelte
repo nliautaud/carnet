@@ -120,7 +120,7 @@
   main {
     position: relative;
     margin: 2em;
-    padding: 2em 1.5em;
+    padding: 4%;
     background: var(--bg-color-gradient);
     border-radius: 1em;
     color: var(--text-color);

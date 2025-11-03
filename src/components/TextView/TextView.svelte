@@ -11,8 +11,7 @@
       texts,
   } from "../../stores/appStore.js";
   import { currentFont, currentTextSize, appearancePanelOpen } from "../../stores/appearance.js";
-  import ActionPanel from "../ActionPanel/ActionPanel.svelte";
-  import ChevronLeftIcon from "../icons/chevronLeft.svelte";
+  import ActionHeader from "../ActionHeader/ActionHeader.svelte";
   import PreviewPill from "./PreviewPill.svelte";
   import SavePreviewButtons from "./SavePreviewButtons.svelte";
 
@@ -145,26 +144,23 @@
   });
 </script>
 
-<div class="actionbar">
-  <button class="btn-icon close" on:click={onClose} aria-label="Fermer">
-    <ChevronLeftIcon />
-  </button>
-  <ActionPanel />
-</div>
+<ActionHeader showBackButton={true} onBack={onClose} />
 
 {#if $previewMode}
   <PreviewPill />
 {/if}
 
-<input
-  id="title"
-  class="title"
-  placeholder="Sans titre"
-  bind:this={titleInput}
-  bind:value={title}
-  readonly={$mode !== "mode-edition"}
-  on:input={handleTitleInput}
-/>
+<div class="title-wrapper">
+  <input
+    id="title"
+    class="title"
+    placeholder="Sans titre"
+    bind:this={titleInput}
+    bind:value={title}
+    readonly={$mode !== "mode-edition"}
+    on:input={handleTitleInput}
+  />
+</div>
 
 {#if $mode === "mode-edition"}
   <div
@@ -195,9 +191,12 @@
 {/if}
 
 <style>
+  .title-wrapper {
+    display: flex;
+  }
   input.title {
     width: 100%;
-    margin: 1em 0 1em 0;
+    margin: 1rem 0 1rem 0;
     padding: 0.5rem;
     font-size: calc(var(--content-font-size, 22px) * 1.45);
     font-weight: 600;
@@ -215,6 +214,7 @@
     margin-bottom: 20vh;
     color: var(--text-color);
     line-height: 1.6;
+    position: relative;
   }
   #content:focus {
     outline: none;

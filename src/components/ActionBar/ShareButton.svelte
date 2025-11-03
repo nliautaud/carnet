@@ -1,4 +1,5 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { compress } from "../../lib/compression.js";
   import { SharedTextService } from "../../services/textService.js";
   import ShareIcon from "../icons/share.svelte";
@@ -6,6 +7,7 @@
   export let title = "";
   export let content = "";
 
+  const dispatch = createEventDispatcher();
   let copying = false;
 
   async function handleShare() {
@@ -17,6 +19,7 @@
     if (success) {
       copying = true;
       setTimeout(() => (copying = false), 1200);
+      dispatch("shared");
     }
   }
 </script>
@@ -25,8 +28,7 @@
   type="button"
   class="btn-icon"
   on:click={handleShare}
-  aria-label="Share this text"
->
+  aria-label="Share this text">
   <ShareIcon />
   {#if copying}
     <span class="copied-label">Copied!</span>

@@ -13,7 +13,7 @@
       sharedTexts,
       texts,
   } from "../../stores/appStore.js";
-  import ActionPanel from "../ActionPanel/ActionPanel.svelte";
+  import ActionHeader from "../ActionHeader/ActionHeader.svelte";
   import MenuActions from "./MenuActions.svelte";
   import MenuSharedTextsList from "./MenuSharedTextsList.svelte";
   import MenuTextList from "./MenuTextList.svelte";
@@ -91,9 +91,7 @@
   }
 </script>
 
-<div class="actionbar">
-  <ActionPanel />
-</div>
+<ActionHeader showBackButton={false} />
 
 <h1>Carnet</h1>
 
@@ -125,9 +123,6 @@
 />
 
 <style>
-  .actionbar {
-    justify-content: end;
-  }
   h1 {
     font-family: var(--font-serif);
     font-size: 2em;
