@@ -4,13 +4,18 @@
   import { TextService } from "../../services/textService.js";
   import { AppearanceService } from "../../services/appearanceService.js";
   import {
-      currentIndex,
-      mode,
-      previewMode,
-      sharedTexts,
-      texts,
+  actionBarOpen,
+    currentIndex,
+    mode,
+    previewMode,
+    sharedTexts,
+    texts,
   } from "../../stores/appStore.js";
-  import { currentFont, currentTextSize, appearancePanelOpen } from "../../stores/appearance.js";
+  import {
+    currentFont,
+    currentTextSize,
+    appearancePanelOpen,
+  } from "../../stores/appearance.js";
   import ActionHeader from "../ActionHeader/ActionHeader.svelte";
   import PreviewPill from "./PreviewPill.svelte";
   import SavePreviewButtons from "./SavePreviewButtons.svelte";
@@ -26,10 +31,12 @@
     const currentText = currentTexts[$currentIndex];
     title = currentText?.title || "";
     content = currentText?.content || "";
-    
+
     // Load appearance settings from current text
     currentFont.set(currentText?.font || AppearanceService.FONTS.SERIF);
-    currentTextSize.set(currentText?.textSize || AppearanceService.TEXT_SIZE_DEFAULT);
+    currentTextSize.set(
+      currentText?.textSize || AppearanceService.TEXT_SIZE_DEFAULT
+    );
   }
 
   // Apply appearance settings when they change
@@ -50,6 +57,13 @@
     save();
   }
 
+  function handleDoubleClick() {
+    if ($mode !== "mode-edition") {
+      mode.set("mode-edition");
+      actionBarOpen.set(true);
+    }
+  }
+
   function save() {
     if ($currentIndex !== null) {
       const titleEl = document.getElementById("title");
@@ -60,11 +74,17 @@
 
       const appearance = {
         font: $currentFont,
-        textSize: $currentTextSize
+        textSize: $currentTextSize,
       };
 
       texts.update((textsArray) =>
-        TextService.saveText(textsArray, $currentIndex, title, content, appearance),
+        TextService.saveText(
+          textsArray,
+          $currentIndex,
+          title,
+          content,
+          appearance
+        )
       );
     }
   }
@@ -90,7 +110,7 @@
       const toSave = $sharedTexts[$currentIndex];
       const existingIdx = TextService.findTextIndexByTitle(
         toSave.title,
-        $texts,
+        $texts
       );
       let newCurrentIndex;
 
@@ -103,7 +123,7 @@
       } else if (detail === "new" && existingIdx !== -1) {
         const newTitle = TextService.generateUniqueTitle(
           toSave.title || "Sans titre",
-          $texts,
+          $texts
         );
         texts.update((textsArray) => {
           const newTexts = [...textsArray, { ...toSave, title: newTitle }];
@@ -117,7 +137,7 @@
 
       // Remove shared text and clean up
       sharedTexts.update((shared) =>
-        TextService.deleteText(shared, $currentIndex),
+        TextService.deleteText(shared, $currentIndex)
       );
       currentIndex.set(newCurrentIndex);
       previewMode.set(false);
@@ -150,7 +170,11 @@
   <PreviewPill />
 {/if}
 
-<div class="title-wrapper">
+<div
+  class="title-wrapper"
+  on:dblclick={handleDoubleClick}
+  role="button"
+  tabindex="0">
   <input
     id="title"
     class="title"
@@ -158,8 +182,7 @@
     bind:this={titleInput}
     bind:value={title}
     readonly={$mode !== "mode-edition"}
-    on:input={handleTitleInput}
-  />
+    on:input={handleTitleInput} />
 </div>
 
 {#if $mode === "mode-edition"}
@@ -168,23 +191,25 @@
     bind:this={contentDiv}
     contenteditable="true"
     bind:innerHTML={content}
-    on:input={handleContentInput}
-  ></div>
+    on:input={handleContentInput}>
+  </div>
 {:else}
   <div
     id="content"
     bind:this={contentDiv}
     contenteditable="false"
     bind:innerHTML={content}
-  ></div>
+    on:dblclick={handleDoubleClick}
+    role="button"
+    tabindex="0">
+  </div>
 {/if}
 
 {#if $previewMode}
   {#if currentTexts && typeof $currentIndex === "number"}
     {@const previewTitle = currentTexts[$currentIndex]?.title || ""}
     {@const existingIdx = $texts.findIndex(
-      (t) =>
-        t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase(),
+      (t) => t.title?.trim().toLowerCase() === previewTitle.trim().toLowerCase()
     )}
     <SavePreviewButtons {existingIdx} {onSavePreviewText} />
   {/if}
@@ -228,8 +253,8 @@
   }
   :global(body.mode-lecture #title),
   :global(body.mode-lecture #content) {
-    pointer-events: none;
     user-select: text;
+    cursor: text;
   }
   :global(body.mode-edition #title),
   :global(body.mode-edition #content) {
