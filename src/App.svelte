@@ -115,10 +115,12 @@
   }
 
   function setupHistoryNavigation() {
+    let previousIndex = null;
+
     // Handle browser back button
     const handlePopState = (event) => {
-      // If we're viewing a text and back button is pressed, go back to menu
-      if ($currentIndex !== null) {
+      // Only handle if we're viewing a text and the state indicates text view navigation
+      if ($currentIndex !== null && (event.state?.textView || event.state === null)) {
         currentIndex.set(null);
         mode.set("mode-lecture");
         previewMode.set(false);
@@ -129,10 +131,11 @@
 
     // Subscribe to currentIndex changes to manage history
     const unsubscribe = currentIndex.subscribe((index) => {
-      if (index !== null) {
-        // Push state when opening a text view
+      // Only push state when transitioning from null to non-null (opening a text)
+      if (index !== null && previousIndex === null) {
         window.history.pushState({ textView: true }, document.title);
       }
+      previousIndex = index;
     });
 
     // Return cleanup function
