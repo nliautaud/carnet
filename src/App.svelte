@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import "./app.css";
 
   import { StorageService } from "./services/storageService.js";
@@ -25,6 +25,7 @@
   // Initialize app
   onMount(() => {
     initializeApp();
+    setupHistoryNavigation();
   });
 
   async function initializeApp() {
@@ -103,6 +104,34 @@
     const url = new URL(window.location.href);
     url.searchParams.delete("share");
     window.history.replaceState({}, document.title, url.pathname + url.search);
+  }
+
+  function setupHistoryNavigation() {
+    // Handle browser back button
+    const handlePopState = (event) => {
+      // If we're viewing a text and back button is pressed, go back to menu
+      if ($currentIndex !== null) {
+        currentIndex.set(null);
+        mode.set("mode-lecture");
+        previewMode.set(false);
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+
+    // Subscribe to currentIndex changes to manage history
+    const unsubscribe = currentIndex.subscribe((index) => {
+      if (index !== null) {
+        // Push state when opening a text view
+        window.history.pushState({ textView: true }, document.title);
+      }
+    });
+
+    // Cleanup on destroy
+    onDestroy(() => {
+      window.removeEventListener('popstate', handlePopState);
+      unsubscribe();
+    });
   }
 </script>
 
