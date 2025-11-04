@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import "./app.css";
 
   import { StorageService } from "./services/storageService.js";
@@ -22,9 +22,18 @@
   // Utils
   import { updateMeta } from "./lib/meta.js";
 
+  let cleanupHistory;
+
   // Initialize app
   onMount(() => {
     initializeApp();
+    cleanupHistory = setupHistoryNavigation();
+  });
+
+  onDestroy(() => {
+    if (cleanupHistory) {
+      cleanupHistory();
+    }
   });
 
   async function initializeApp() {
@@ -103,6 +112,37 @@
     const url = new URL(window.location.href);
     url.searchParams.delete("share");
     window.history.replaceState({}, document.title, url.pathname + url.search);
+  }
+
+  function setupHistoryNavigation() {
+    let previousIndex = null;
+
+    // Handle browser back button
+    const handlePopState = (event) => {
+      // Only handle if we're viewing a text and the state indicates text view navigation
+      if ($currentIndex !== null && (event.state?.textView || event.state === null)) {
+        currentIndex.set(null);
+        mode.set("mode-lecture");
+        previewMode.set(false);
+      }
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+
+    // Subscribe to currentIndex changes to manage history
+    const unsubscribe = currentIndex.subscribe((index) => {
+      // Only push state when transitioning from null to non-null (opening a text)
+      if (index !== null && previousIndex === null) {
+        window.history.pushState({ textView: true }, document.title);
+      }
+      previousIndex = index;
+    });
+
+    // Return cleanup function
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      unsubscribe();
+    };
   }
 </script>
 
