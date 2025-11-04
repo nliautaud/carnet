@@ -22,10 +22,18 @@
   // Utils
   import { updateMeta } from "./lib/meta.js";
 
+  let cleanupHistory;
+
   // Initialize app
   onMount(() => {
     initializeApp();
-    setupHistoryNavigation();
+    cleanupHistory = setupHistoryNavigation();
+  });
+
+  onDestroy(() => {
+    if (cleanupHistory) {
+      cleanupHistory();
+    }
   });
 
   async function initializeApp() {
@@ -127,11 +135,11 @@
       }
     });
 
-    // Cleanup on destroy
-    onDestroy(() => {
+    // Return cleanup function
+    return () => {
       window.removeEventListener('popstate', handlePopState);
       unsubscribe();
-    });
+    };
   }
 </script>
 
