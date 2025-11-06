@@ -9,6 +9,6 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   class="icon icon-tabler icons-tabler-outline icon-tabler-text-decrease">
-  <path d="M10 22v-8a2 2 0 1 1 5 0v8" />
-  <path d="M10 17h5" />
+  <path d="M7 22v-13a3.5 3.5 0 1 1 9 0v13" />
+  <path d="M7 16h7" />
 </svg>

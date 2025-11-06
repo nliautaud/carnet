@@ -12,9 +12,9 @@ export class AppearanceService {
   });
 
   static TEXT_SIZE_MIN = 16;
-  static TEXT_SIZE_MAX = 32;
+  static TEXT_SIZE_MAX = 34;
   static TEXT_SIZE_DEFAULT = 22;
-  static TEXT_SIZE_STEP = 2;
+  static TEXT_SIZE_STEP = 4;
 
   static applyFont(font) {
     const fontFamily = this.FONT_FAMILIES[font] || this.FONT_FAMILIES.serif

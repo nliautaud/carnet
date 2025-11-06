@@ -13,5 +13,5 @@
   stroke-linecap="round"
   stroke-linejoin="round"
   class={`icon icon-tabler icons-tabler-outline icon-tabler-letter-a ${classes}`}>
-  <text x="12" y="22" text-anchor="middle" font-size="40" style="font-family: var(--font-serif);">a</text>
+  <text x="12" y="22" text-anchor="middle" font-size="40" style="font-family: var(--font-mono);">a</text>
 </svg>

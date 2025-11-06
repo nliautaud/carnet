@@ -8,11 +8,12 @@
     appearancePanelOpen,
   } from "../stores/appearance.js";
   import { texts, currentIndex, previewMode } from "../stores/appStore.js";
-  import FontMonospaceIcon from "./icons/fontMonospace.svelte";
+  import FontMonospaceIcon from "./icons/fontMono.svelte";
   import FontSerifIcon from "./icons/fontSerif.svelte";
   import FontSansIcon from "./icons/fontSans.svelte";
   import TextIncreaseIcon from "./icons/textIncrease.svelte";
   import TextDecreaseIcon from "./icons/textDecrease.svelte";
+  import TextSizeDefault from "./icons/textSizeDefault.svelte";
 
   let panelPosition = "fixed"; // "right", "bottom", or "fixed"
   let panelElement;
@@ -214,7 +215,7 @@
         on:click={handleDefaultSize}
         disabled={$currentTextSize == AppearanceService.TEXT_SIZE_DEFAULT}
         aria-label="Default text size">
-        <FontSansIcon />
+        <TextSizeDefault />
       </button>
       <button
         class="btn-size"

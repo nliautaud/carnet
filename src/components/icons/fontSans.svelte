@@ -8,13 +8,10 @@
   width="24"
   height="24"
   viewBox="0 0 24 24"
-  fill="none"
-  stroke={fill}
+  fill={fill}
   stroke-width="2"
   stroke-linecap="round"
   stroke-linejoin="round"
   class={`icon icon-tabler icons-tabler-outline icon-tabler-letter-a ${classes}`}>
-  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-  <path d="M7 20v-12a4 4 0 0 1 4 -4h2a4 4 0 0 1 4 4v12" />
-  <path d="M7 13l10 0" />
+  <text x="12" y="22" text-anchor="middle" font-size="40" style="font-family: var(--font-sans);">a</text>
 </svg>
