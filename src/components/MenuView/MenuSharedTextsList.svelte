@@ -1,5 +1,5 @@
 <script>
-  import XIcon from "../icons/x.svelte";
+  import { XIcon } from "@lucide/svelte";
 
   export let sharedTexts = [];
   export let newlySharedIndexes = new Set();

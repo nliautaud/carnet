@@ -1,9 +1,7 @@
 <script>
   import { fade, slide } from "svelte/transition";
-  import ShareIcon from "../icons/share.svelte";
-  import TrashIcon from "../icons/trash.svelte";
-  import XIcon from "../icons/x.svelte";
   import { selectMode } from "../../stores/appStore";
+  import { ShareIcon, TrashIcon, XIcon } from "@lucide/svelte";
 
   export let selected = new Set();
   export let onDeleteSelection;

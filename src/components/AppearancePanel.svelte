@@ -8,7 +8,6 @@
     appearancePanelOpen,
   } from "../stores/appearance.js";
   import { texts, currentIndex, previewMode } from "../stores/appStore.js";
-  import XIcon from "./icons/x.svelte";
   import FontMonospaceIcon from "./icons/fontMonospace.svelte";
   import FontSerifIcon from "./icons/fontSerif.svelte";
   import FontSansIcon from "./icons/fontSans.svelte";

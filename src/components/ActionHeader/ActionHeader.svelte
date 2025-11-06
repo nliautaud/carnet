@@ -1,8 +1,7 @@
 <script>
   import { actionBarOpen, mode } from "../../stores/appStore.js";
-  import ChevronLeftIcon from "../icons/chevronLeft.svelte";
-  import MenuIcon from "../icons/menu.svelte";
   import ActionBar from "../ActionBar/ActionBar.svelte";
+  import { ChevronLeftIcon, SparkleIcon } from "@lucide/svelte";
 
   export let onBack = null;
   export let showBackButton = false;
@@ -54,7 +53,7 @@
       class="btn-icon menu-button"
       on:click={handleMenuClick}
       aria-label="Menu">
-      <MenuIcon />
+      <SparkleIcon />
     </button>
   </div>
 </div>

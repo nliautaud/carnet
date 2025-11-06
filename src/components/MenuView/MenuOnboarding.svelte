@@ -1,12 +1,12 @@
 <script>
-  import Menu from "../icons/menu.svelte";
+  import { SparkleIcon } from "@lucide/svelte";
 </script>
 
 <div class="onboarding">
   <div class="message">
     <p class="void-text">The void awaits...</p>
     <p class="instruction">
-      Press the <span class="icon"><Menu /></span> button at the top to create your
+      Press the <span class="icon"><SparkleIcon /></span> button at the top to create your
       first text. This is the only interface element you will ever need.
     </p>
     <p class="author">

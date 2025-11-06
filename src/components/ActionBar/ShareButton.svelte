@@ -2,7 +2,7 @@
   import { createEventDispatcher } from "svelte";
   import { compress } from "../../lib/compression.js";
   import { SharedTextService } from "../../services/textService.js";
-  import ShareIcon from "../icons/share.svelte";
+  import { ShareIcon } from "@lucide/svelte";
 
   export let title = "";
   export let content = "";

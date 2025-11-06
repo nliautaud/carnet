@@ -1,7 +1,6 @@
 <script>
+  import { SquareCheckIcon, SquareIcon } from "@lucide/svelte";
   import { AppearanceService } from "../../services/appearanceService.js";
-  import SquareIcon from "../icons/square.svelte";
-  import SquareCheckFilledIcon from "../icons/squareCheckFilled.svelte";
 
   export let texts = [];
   export let selectMode = false;
@@ -25,7 +24,7 @@
           on:click={() => onSelectItem(i)}
         >
           {#if selected.has(i)}
-            <SquareCheckFilledIcon />
+            <SquareCheckIcon />
           {:else}
             <SquareIcon />
           {/if}

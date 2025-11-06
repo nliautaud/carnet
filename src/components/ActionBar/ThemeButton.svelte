@@ -1,8 +1,8 @@
 <script>
+  import { EclipseIcon, MoonIcon, SunIcon } from "@lucide/svelte";
   import { StorageService } from "../../services/storageService.js";
   import { ThemeService } from "../../services/themeService.js";
   import { theme } from "../../stores/appStore.js";
-  import ThemeIcon from "../icons/theme.svelte";
 
   function handleToggleTheme() {
     const nextTheme = ThemeService.getNextTheme($theme);
@@ -19,34 +19,20 @@
   $: currentThemeInfo = getThemeDisplayInfo($theme);
 
   function getThemeDisplayInfo(currentTheme) {
-    const availableThemes = ThemeService.getAvailableThemes();
     const nextTheme = ThemeService.getNextTheme(currentTheme);
 
-    // Determine what the button should show
-    let displayTheme = currentTheme;
-    let ariaLabel = "Toggle theme";
-
-    if (availableThemes.length === 2) {
-      // When only 2 options (auto + opposite), show what will be next
-      const systemScheme = ThemeService.getSystemColorScheme();
-      if (currentTheme === ThemeService.THEMES.AUTO) {
-        displayTheme = nextTheme; // Show the manual option
-        ariaLabel = `Switch to ${nextTheme} theme`;
-      } else {
-        displayTheme = ThemeService.THEMES.AUTO; // Show auto when manual is selected
-        ariaLabel = "Switch to auto theme";
-      }
-    } else {
-      // When 3 options available, show current
-      const themeNames = {
-        [ThemeService.THEMES.AUTO]: "auto",
-        [ThemeService.THEMES.LIGHT]: "light",
-        [ThemeService.THEMES.DARK]: "dark",
+    if (currentTheme === ThemeService.THEMES.AUTO) {
+      return {
+        displayTheme: nextTheme,
+        ariaLabel: `Switch to ${nextTheme} theme`,
+        icon: nextTheme === ThemeService.THEMES.LIGHT ? SunIcon : MoonIcon
       };
-      ariaLabel = `Current: ${themeNames[currentTheme] || "auto"}, click to change`;
     }
-
-    return { displayTheme, ariaLabel };
+    return {
+      displayTheme: ThemeService.THEMES.AUTO,
+      ariaLabel: "Switch back to device theme",
+      icon: EclipseIcon
+    };
   }
 </script>
 
@@ -55,7 +41,6 @@
   id="toggle-theme"
   on:click={handleToggleTheme}
   aria-label={currentThemeInfo.ariaLabel}
-  title={currentThemeInfo.ariaLabel}
->
-  <ThemeIcon theme={currentThemeInfo.displayTheme} />
+  title={currentThemeInfo.ariaLabel}>
+  <svelte:component this={currentThemeInfo.icon} />
 </button>

@@ -1,4 +1,5 @@
 <script>
+  import { EyeIcon, ListCheckIcon, PaletteIcon, PencilIcon, PlusIcon } from "@lucide/svelte";
   import { TextService } from "../../services/textService.js";
   import { ThemeService } from "../../services/themeService.js";
   import {
@@ -12,13 +13,8 @@
     actionBarOpen,
   } from "../../stores/appStore.js";
   import { appearancePanelOpen } from "../../stores/appearance.js";
-  import ListCheckIcon from "../icons/listCheck.svelte";
-  import ModeIcon from "../icons/mode.svelte";
-  import PlusIcon from "../icons/plus.svelte";
-  import PaletteIcon from "../icons/palette.svelte";
   import ShareButton from "./ShareButton.svelte";
   import ThemeButton from "./ThemeButton.svelte";
-  import EyeIcon from "../icons/eye.svelte";
 
   export let classes = "";
 
@@ -103,6 +99,7 @@
         <ListCheckIcon />
       </button>
     {/if}
+    <ThemeButton />
   {/if}
   {#if $currentIndex !== null && !$previewMode}
     {#if isEditMode}
@@ -121,7 +118,11 @@
         id="toggle-mode"
         on:click={handleToggleMode}
         aria-label="Switch to edit mode">
-        <ModeIcon />
+        {#if $mode === "mode-lecture"}
+          <PencilIcon />
+        {:else if $mode === "mode-edition"}
+          <EyeIcon />
+        {/if}
       </button>
       <ShareButton
         title={currentTexts[$currentIndex || 0]?.title}
