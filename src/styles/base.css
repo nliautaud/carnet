@@ -12,7 +12,7 @@
   --panel-bg: rgb(231, 232, 248);
 
   /* Dark mode */
-  --dark-app-bg-color: linear-gradient(135deg, #161616 0%, #060606 100%);
+  --dark-app-bg-color: linear-gradient(135deg, #1f1f1f 0%, #121212 100%);
   --dark-bg-color-gradient: linear-gradient(135deg, #1f1f1f 0%, #121212 100%);
   --dark-bg-color: #1f1f1f;
   --dark-text-color: #eee;

@@ -9,49 +9,29 @@
   export let onSelectItem;
 
   function getFontFamily(text) {
-    return AppearanceService.getFontFamily(text.font || AppearanceService.FONTS.SERIF);
+    return AppearanceService.getFontFamily(
+      text.font || AppearanceService.FONTS.SERIF
+    );
   }
 </script>
 
 <ul class="text-list">
   {#each texts as t, i}
     <li class="text-item">
-      {#if selectMode}
-        <button
-          type="button"
-          class="checkbox-btn"
-          aria-label="Select text"
-          on:click={() => onSelectItem(i)}
-        >
+      <button
+        type="button"
+        on:click={() => !selectMode ? onOpenEditor(i): onSelectItem(i)}
+        class="btn-text-item {t.title ? '' : 'untitled'} {selectMode && selected.has(i) ? 'selected' : ''}"
+        style="font-family: {getFontFamily(t)}; --delay: {i * 0.2 + .5}s;">
+        {#if selectMode}
           {#if selected.has(i)}
             <SquareCheckIcon />
           {:else}
             <SquareIcon />
           {/if}
-        </button>
-      {/if}
-      <button
-        type="button"
-        on:click={() => !selectMode && onOpenEditor(i)}
-        class="btn-text-item {t.title ? '' : 'untitled'}"
-        style="font-family: {getFontFamily(t)}"
-        disabled={selectMode}
-      >
+        {/if}
         {t.title || "Sans titre"}
       </button>
     </li>
   {/each}
 </ul>
-
-<style>
-  .checkbox-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-color);
-  }
-</style>

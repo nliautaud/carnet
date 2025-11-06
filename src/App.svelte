@@ -114,6 +114,8 @@
     window.history.replaceState({}, document.title, url.pathname + url.search);
   }
 
+  let menuFirstAppearance = false;
+
   function setupHistoryNavigation() {
     let previousIndex = null;
 
@@ -129,11 +131,15 @@
     
     window.addEventListener('popstate', handlePopState);
 
-    // Subscribe to currentIndex changes to manage history
+    // Subscribe to currentIndex changes to manage history and menu animation
     const unsubscribe = currentIndex.subscribe((index) => {
       // Only push state when transitioning from null to non-null (opening a text)
       if (index !== null && previousIndex === null) {
         window.history.pushState({ textView: true }, document.title);
+      }
+      // Detect first menu show (when index goes from non-null to null)
+      if (index === null && previousIndex !== null && !menuFirstAppearance) {
+        menuFirstAppearance = true;
       }
       previousIndex = index;
     });
@@ -146,7 +152,7 @@
   }
 </script>
 
-<main>
+<main class={menuFirstAppearance ? "animate" : ""}>
   {#if ($previewMode && $sharedTexts.length) || $currentIndex !== null}
     <TextEditor />
   {:else}
@@ -161,11 +167,8 @@
     position: relative;
     margin: 2em;
     padding: 4%;
-    background: var(--bg-color-gradient);
-    border-radius: 1em;
     color: var(--text-color);
     transition:
-      background 0.3s,
       color 0.3s,
       transform 0.3s cubic-bezier(0.47, 1.64, 0.41, 0.8);
     min-height: 1000px;

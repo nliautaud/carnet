@@ -17,10 +17,11 @@ input {
 }
 
 .text-item {
-  margin: 0.8em 0;
+  margin: 1.5em 0;
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5em;
 }
 
@@ -31,9 +32,10 @@ input {
 
 .btn-text-item {
   position: relative;
-  flex: 1;
-  text-align: left;
-  display: block;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 1em;
   padding: 0.6em 1em;
   border-radius: 6px;
   text-decoration: none;
@@ -44,15 +46,41 @@ input {
   font-size: 1em;
   cursor: pointer;
 }
+.animate .btn-text-item {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadein 0.3s cubic-bezier(.47,1.64,.41,.8);
+  animation-delay: var(--delay);
+  animation-fill-mode: both;
+}
+.btn-text-item.selected {
+  background: var(--hover-bg);
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
 .btn-text-item:after {
   border-bottom: 1px solid var(--border-color);
   content: "";
   display: block;
-  width: 100%;
   bottom: -0.2em;
-  left: 0;
+  left: 1em;
+  right: 1em;
   position: absolute;
+  transition: all 0.2s ease-out;
+}
+.btn-text-item:hover:after {
+  left: .5em;
+  right: .5em;
 }
 
 button:hover {

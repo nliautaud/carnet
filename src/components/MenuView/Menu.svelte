@@ -1,17 +1,17 @@
 <script>
   import {
-      SharedTextService,
-      TextService,
+    SharedTextService,
+    TextService,
   } from "../../services/textService.js";
   import {
-      currentIndex,
-      mode,
-      newlySharedIndexes,
-      previewMode,
-      selectMode,
-      selected,
-      sharedTexts,
-      texts,
+    currentIndex,
+    mode,
+    newlySharedIndexes,
+    previewMode,
+    selectMode,
+    selected,
+    sharedTexts,
+    texts,
   } from "../../stores/appStore.js";
   import ActionHeader from "../ActionHeader/ActionHeader.svelte";
   import MenuActions from "./MenuActions.svelte";
@@ -32,7 +32,7 @@
 
   function deleteSharedText(i) {
     sharedTexts.update((shared) =>
-      SharedTextService.removeSharedText(shared, i),
+      SharedTextService.removeSharedText(shared, i)
     );
 
     // Update newly shared indexes
@@ -71,7 +71,7 @@
   function handleDeleteSelection() {
     if ($selected.size > 0) {
       texts.update((textsArray) =>
-        TextService.deleteTexts(textsArray, $selected),
+        TextService.deleteTexts(textsArray, $selected)
       );
       selected.set(new Set());
       selectMode.set(false);
@@ -93,14 +93,24 @@
 
 <ActionHeader showBackButton={false} />
 
-<h1>Carnet</h1>
+<h1>
+  {#each "Carnet".split("") as char, i}
+    <span
+      style="animation-delay: {Math.abs(1.5 - i) * 0.2}s; --amp: {Math.abs(
+        1.8 - i
+      ) *
+        -50 -
+        2}px;">
+      {char}
+    </span>
+  {/each}
+</h1>
 
 {#if $selectMode}
   <MenuActions
     selected={$selected}
     onDeleteSelection={handleDeleteSelection}
-    onShareSelection={handleShareSelection}
-  />
+    onShareSelection={handleShareSelection} />
 {/if}
 
 {#if $texts.length === 0}
@@ -111,16 +121,14 @@
     selectMode={$selectMode}
     selected={$selected}
     onOpenEditor={openEditor}
-    onSelectItem={handleSelectItem}
-  />
+    onSelectItem={handleSelectItem} />
 {/if}
 
 <MenuSharedTextsList
   sharedTexts={$sharedTexts}
   newlySharedIndexes={$newlySharedIndexes}
   onOpenSharedPreview={openSharedPreview}
-  onDeleteSharedText={deleteSharedText}
-/>
+  onDeleteSharedText={deleteSharedText} />
 
 <style>
   h1 {
@@ -129,5 +137,24 @@
     font-weight: 600;
     text-align: center;
     margin: 2em 0 0 0;
+    letter-spacing: 4px;
+  }
+  :global(.animate) h1 span {
+    display: inline-block;
+    animation: appear 0.5s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+    animation-fill-mode: both;
+  }
+  @keyframes appear {
+    0% {
+      transform: translateY(var(--amp));
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(calc(var(--amp) / -10));
+      opacity: 1;
+    }
   }
 </style>
