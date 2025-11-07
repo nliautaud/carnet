@@ -8,13 +8,17 @@
   function handleSparkleClick() {
     actionBarOpen.update((open) => !open);
   }
+  function handleOutsideClose() {
+    if($mode === 'mode-edition') return;
+    actionBarOpen.set(false);
+  }
 </script>
 
 <div class="action-header" class:actionbar-visible={$actionBarOpen}>
   <div class="action-bar-container" class:visible={$actionBarOpen}>
     <OutsideDismissable
       open={$actionBarOpen}
-      onClose={() => actionBarOpen.set(false)}>
+      onClose={handleOutsideClose}>
       <ActionBar />
     </OutsideDismissable>
   </div>
