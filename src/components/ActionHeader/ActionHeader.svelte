@@ -2,6 +2,7 @@
   import { actionBarOpen, mode } from "../../stores/appStore.js";
   import ActionBar from "../ActionBar/ActionBar.svelte";
   import { ChevronLeftIcon, SparkleIcon } from "@lucide/svelte";
+  import OutsideDismissable from "../OutsideDismissable.svelte";
 
   export let onBack = null;
   export let showBackButton = false;
@@ -15,25 +16,7 @@
       onBack();
     }
   }
-
-  function handleOverlayClick() {
-    // Don't close action bar in edit mode
-    if ($mode === "mode-edition") {
-      return;
-    }
-    actionBarOpen.set(false);
-  }
 </script>
-
-{#if $actionBarOpen && $mode !== "mode-edition"}
-  <div
-    class="overlay"
-    on:click={handleOverlayClick}
-    on:keydown={handleOverlayClick}
-    role="button"
-    tabindex="0">
-  </div>
-{/if}
 
 <div class="action-header" class:actionbar-visible={$actionBarOpen}>
   <div class="header-buttons left" class:fade-out={$actionBarOpen}>
@@ -45,7 +28,11 @@
   </div>
 
   <div class="action-bar-container" class:visible={$actionBarOpen}>
-    <ActionBar />
+    <OutsideDismissable
+      open={$actionBarOpen}
+      onClose={() => actionBarOpen.set(false)}>
+      <ActionBar />
+    </OutsideDismissable>
   </div>
 
   <div class="header-buttons right" class:fade-out={$actionBarOpen}>
@@ -59,16 +46,6 @@
 </div>
 
 <style>
-  .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 99;
-    background: transparent;
-  }
-
   .action-header {
     position: relative;
     padding: 0.5em 0 0;

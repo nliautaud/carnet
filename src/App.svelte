@@ -161,7 +161,6 @@
 
 <style>
   main {
-    position: relative;
     margin: 2em;
     padding: 4%;
     color: var(--text-color);
