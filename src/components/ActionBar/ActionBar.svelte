@@ -152,6 +152,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s cubic-bezier(0.47, 1.64, 0.41, 0.8);
+    overflow: hidden;
   }
 
   .action-bar.visible {
