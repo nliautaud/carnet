@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store'
 import { actionBarOpen, currentIndex, mode, previewMode } from './appStore.js'
+import { appearancePanelOpen } from './appearance.js'
 
 export const menuFirstLoad = writable(true)
 export const showAbout = writable(false)
@@ -23,13 +24,7 @@ export function setupHistoryNavigation() {
     if (get(currentIndex) !== newIndex) {
       currentIndex.set(newIndex)
     }
-
-    // if we've returned to the menu, ensure modes are reset
-    if (newIndex === null) {
-      mode.set('mode-lecture')
-      previewMode.set(false)
-    }
-    showAbout.set(false)
+    cleanState()
   }
 
   window.addEventListener('popstate', handlePopState)
@@ -64,12 +59,16 @@ export function goToMenu(about = false) {
     // ignore environments that disallow pushState
   }
 
-  // Reset application navigation state to menu
-  actionBarOpen.set(false)
   currentIndex.set(null)
+  cleanState()
+}
+
+function cleanState() {
   mode.set('mode-lecture')
+  actionBarOpen.set(false)
   previewMode.set(false)
-  showAbout.set(about)
+  showAbout.set(false)
+  appearancePanelOpen.set(false)
 }
 
 export function closeAbout() {
