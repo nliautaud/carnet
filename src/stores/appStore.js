@@ -11,7 +11,6 @@ export const selectMode = writable(false)
 export const selected = writable(new Set())
 export const newlySharedIndexes = writable(new Set())
 export const actionBarOpen = writable(false)
-export const menuFirstLoad = writable(true)
 
 // Derived stores
 export const currentText = writable(null)

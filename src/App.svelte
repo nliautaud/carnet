@@ -13,9 +13,10 @@
       previewMode,
       sharedTexts,
       texts,
-      theme,
-      menuFirstLoad,
+      theme
   } from "./stores/appStore.js";
+
+  import { setupHistoryNavigation, menuFirstLoad } from "./stores/navigation.js";
 
   import TextMenu from "./components/MenuView/Menu.svelte";
   import TextEditor from "./components/TextView/TextView.svelte";
@@ -115,38 +116,6 @@
     window.history.replaceState({}, document.title, url.pathname + url.search);
   }
 
-  function setupHistoryNavigation() {
-    let previousIndex = $currentIndex;
-
-    // Handle browser back button
-    const handlePopState = (event) => {
-      // Only handle if we're viewing a text and the state indicates text view navigation
-      if ($currentIndex !== null && (event.state?.textView || event.state === null)) {
-        currentIndex.set(null);
-        mode.set("mode-lecture");
-        previewMode.set(false);
-      }
-    };
-    
-    window.addEventListener('popstate', handlePopState);
-
-    // Subscribe to currentIndex changes to manage history and menu animation
-    const unsubscribe = currentIndex.subscribe((index) => {
-      // Only push state when transitioning from null to non-null (opening a text)
-      if (index !== null && previousIndex === null) {
-        window.history.pushState({ textView: true }, document.title);
-      }
-      // Detect first menu show (when index goes from non-null to null)
-      menuFirstLoad.set(index === null && previousIndex === null && $menuFirstLoad);
-      previousIndex = index;
-    });
-
-    // Return cleanup function
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-      unsubscribe();
-    };
-  }
 </script>
 
 <main class={$menuFirstLoad ? "animate" : ""}>

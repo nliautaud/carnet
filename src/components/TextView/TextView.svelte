@@ -164,7 +164,7 @@
   });
 </script>
 
-<ActionHeader showBackButton={true} onBack={onClose} />
+<ActionHeader />
 
 {#if $previewMode}
   <PreviewPill />

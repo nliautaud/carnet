@@ -91,7 +91,7 @@
   }
 </script>
 
-<ActionHeader showBackButton={false} />
+<ActionHeader />
 
 <h1>
   {#each "Carnet".split("") as char, i}

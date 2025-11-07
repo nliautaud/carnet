@@ -1,5 +1,13 @@
 <script>
-  import { EyeIcon, ListCheckIcon, PaletteIcon, PencilIcon, PlusIcon } from "@lucide/svelte";
+  import {
+    EyeIcon,
+    HomeIcon,
+    HouseIcon,
+    ListCheckIcon,
+    PaletteIcon,
+    PencilIcon,
+    PlusIcon,
+  } from "@lucide/svelte";
   import { TextService } from "../../services/textService.js";
   import { ThemeService } from "../../services/themeService.js";
   import {
@@ -12,6 +20,7 @@
     texts,
     actionBarOpen,
   } from "../../stores/appStore.js";
+  import { goToMenu } from "../../stores/navigation.js";
   import { appearancePanelOpen } from "../../stores/appearance.js";
   import ShareButton from "./ShareButton.svelte";
   import ThemeButton from "./ThemeButton.svelte";
@@ -77,6 +86,11 @@
     // Theme toggle should NOT close the action bar
     // The ThemeButton component handles the theme change
   }
+
+  function handleGoHome() {
+    goToMenu();
+    closeActionBar();
+  }
 </script>
 
 <div class="action-bar {classes}" class:visible={$actionBarOpen}>
@@ -113,6 +127,13 @@
       </button>
     {:else}
       <!-- In view mode, show all buttons -->
+      <button
+        class="btn-icon"
+        id="home-btn"
+        on:click={handleGoHome}
+        aria-label="Go to home">
+        <HouseIcon />
+      </button>
       <button
         class="btn-icon"
         id="toggle-mode"

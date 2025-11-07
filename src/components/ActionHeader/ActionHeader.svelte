@@ -1,31 +1,15 @@
 <script>
   import { actionBarOpen, mode } from "../../stores/appStore.js";
   import ActionBar from "../ActionBar/ActionBar.svelte";
-  import { ChevronLeftIcon, SparkleIcon } from "@lucide/svelte";
+  import { SparkleIcon } from "@lucide/svelte";
   import OutsideDismissable from "../OutsideDismissable.svelte";
 
-  export let onBack = null;
-  export let showBackButton = false;
-
-  function handleMenuClick() {
+  function handleSparkleClick() {
     actionBarOpen.update((open) => !open);
-  }
-
-  function handleBack() {
-    if (onBack) {
-      onBack();
-    }
   }
 </script>
 
 <div class="action-header" class:actionbar-visible={$actionBarOpen}>
-  <div class="header-buttons left" class:fade-out={$actionBarOpen}>
-    {#if showBackButton}
-      <button class="btn-icon" on:click={handleBack} aria-label="Back">
-        <ChevronLeftIcon />
-      </button>
-    {/if}
-  </div>
 
   <div class="action-bar-container" class:visible={$actionBarOpen}>
     <OutsideDismissable
@@ -38,7 +22,7 @@
   <div class="header-buttons right" class:fade-out={$actionBarOpen}>
     <button
       class="btn-icon menu-button"
-      on:click={handleMenuClick}
+      on:click={handleSparkleClick}
       aria-label="Menu">
       <SparkleIcon />
     </button>
@@ -50,7 +34,7 @@
     position: relative;
     padding: 0.5em 0 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
     align-items: flex-start;
     min-height: 80px;
   }
