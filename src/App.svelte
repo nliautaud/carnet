@@ -18,8 +18,8 @@
 
   import { setupHistoryNavigation, menuFirstLoad } from "./stores/navigation.js";
 
-  import TextMenu from "./components/MenuView/Menu.svelte";
-  import TextEditor from "./components/TextView/TextView.svelte";
+  import MenuView from "./components/MenuView/MenuView.svelte";
+  import TextView from "./components/TextView/TextView.svelte";
   import AppearancePanel from "./components/AppearancePanel.svelte";
   // Utils
   import { updateMeta } from "./lib/meta.js";
@@ -120,9 +120,9 @@
 
 <main class={$menuFirstLoad ? "animate" : ""}>
   {#if ($previewMode && $sharedTexts.length) || $currentIndex !== null}
-    <TextEditor />
+    <TextView />
   {:else}
-    <TextMenu />
+    <MenuView />
   {/if}
 </main>
 

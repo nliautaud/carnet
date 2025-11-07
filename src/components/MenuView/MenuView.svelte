@@ -13,11 +13,13 @@
     sharedTexts,
     texts,
   } from "../../stores/appStore.js";
+  import { showAbout } from "../../stores/navigation.js";
   import ActionHeader from "../ActionHeader/ActionHeader.svelte";
+  import About from "./About.svelte";
   import MenuActions from "./MenuActions.svelte";
   import MenuSharedTextsList from "./MenuSharedTextsList.svelte";
   import MenuTextList from "./MenuTextList.svelte";
-  import MenuOnboarding from "./MenuOnboarding.svelte";
+  import Onboarding from "./Onboarding.svelte";
 
   function openEditor(i) {
     currentIndex.set(i);
@@ -113,8 +115,10 @@
     onShareSelection={handleShareSelection} />
 {/if}
 
-{#if $texts.length === 0}
-  <MenuOnboarding />
+{#if $showAbout}
+  <About />
+{:else if $texts.length === 0}
+  <Onboarding />
 {:else}
   <MenuTextList
     texts={$texts}

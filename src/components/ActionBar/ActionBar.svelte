@@ -3,6 +3,7 @@
     EyeIcon,
     HomeIcon,
     HouseIcon,
+    InfoIcon,
     ListCheckIcon,
     PaletteIcon,
     PencilIcon,
@@ -20,7 +21,7 @@
     texts,
     actionBarOpen,
   } from "../../stores/appStore.js";
-  import { goToMenu } from "../../stores/navigation.js";
+  import { goToMenu, showAbout } from "../../stores/navigation.js";
   import { appearancePanelOpen } from "../../stores/appearance.js";
   import ShareButton from "./ShareButton.svelte";
   import ThemeButton from "./ThemeButton.svelte";
@@ -87,8 +88,8 @@
     // The ThemeButton component handles the theme change
   }
 
-  function handleGoHome() {
-    goToMenu();
+  function handleGoHome(about = false) {
+    goToMenu(about);
     closeActionBar();
   }
 </script>
@@ -113,6 +114,15 @@
         <ListCheckIcon />
       </button>
     {/if}
+    {#if !$showAbout}
+    <button
+      class="btn-icon"
+      id="about-btn"
+      on:click={() => handleGoHome(true)}
+      aria-label="About">
+      <InfoIcon />
+    </button>
+    {/if}
     <ThemeButton />
   {/if}
   {#if $currentIndex !== null && !$previewMode}
@@ -130,7 +140,7 @@
       <button
         class="btn-icon"
         id="home-btn"
-        on:click={handleGoHome}
+        on:click={() => handleGoHome()}
         aria-label="Go to home">
         <HouseIcon />
       </button>
@@ -145,10 +155,6 @@
           <EyeIcon />
         {/if}
       </button>
-      <ShareButton
-        title={currentTexts[$currentIndex || 0]?.title}
-        content={currentTexts[$currentIndex || 0]?.content}
-        on:shared={handleShare} />
       <button
         class="btn-icon"
         on:click={handleToggleAppearance}
@@ -156,6 +162,17 @@
         aria-pressed={$appearancePanelOpen}
         class:active={$appearancePanelOpen}>
         <PaletteIcon />
+      </button>
+      <ShareButton
+        title={currentTexts[$currentIndex || 0]?.title}
+        content={currentTexts[$currentIndex || 0]?.content}
+        on:shared={handleShare} />
+      <button
+        class="btn-icon"
+        id="about-btn"
+        on:click={() => handleGoHome(true)}
+        aria-label="About">
+        <InfoIcon />
       </button>
       <ThemeButton />
     {/if}

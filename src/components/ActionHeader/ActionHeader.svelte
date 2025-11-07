@@ -1,8 +1,9 @@
 <script>
   import { actionBarOpen, mode } from "../../stores/appStore.js";
   import ActionBar from "../ActionBar/ActionBar.svelte";
-  import { SparkleIcon } from "@lucide/svelte";
+  import { SparkleIcon, XIcon } from "@lucide/svelte";
   import OutsideDismissable from "../OutsideDismissable.svelte";
+  import { closeAbout, showAbout } from "../../stores/navigation.js";
 
   function handleSparkleClick() {
     actionBarOpen.update((open) => !open);
@@ -10,7 +11,6 @@
 </script>
 
 <div class="action-header" class:actionbar-visible={$actionBarOpen}>
-
   <div class="action-bar-container" class:visible={$actionBarOpen}>
     <OutsideDismissable
       open={$actionBarOpen}
@@ -20,12 +20,21 @@
   </div>
 
   <div class="header-buttons right" class:fade-out={$actionBarOpen}>
-    <button
-      class="btn-icon menu-button"
-      on:click={handleSparkleClick}
-      aria-label="Menu">
-      <SparkleIcon />
-    </button>
+    {#if $showAbout}
+      <button
+        class="btn-icon back-button"
+        on:click={closeAbout}
+        aria-label="Back">
+        <XIcon />
+      </button>
+    {:else}
+      <button
+        class="btn-icon menu-button"
+        on:click={handleSparkleClick}
+        aria-label="Menu">
+        <SparkleIcon />
+      </button>
+    {/if}
   </div>
 </div>
 

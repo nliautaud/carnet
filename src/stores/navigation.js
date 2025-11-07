@@ -1,7 +1,8 @@
 import { get, writable } from 'svelte/store'
-import { currentIndex, mode, previewMode } from './appStore.js'
+import { actionBarOpen, currentIndex, mode, previewMode } from './appStore.js'
 
 export const menuFirstLoad = writable(true)
+export const showAbout = writable(false)
 
 export function setupHistoryNavigation() {
   let previousIndex = get(currentIndex)
@@ -28,6 +29,7 @@ export function setupHistoryNavigation() {
       mode.set('mode-lecture')
       previewMode.set(false)
     }
+    showAbout.set(false)
   }
 
   window.addEventListener('popstate', handlePopState)
@@ -54,7 +56,7 @@ export function setupHistoryNavigation() {
 }
 
 // Programmatic navigation helper to go back to the menu
-export function goToMenu() {
+export function goToMenu(about = false) {
   try {
     // Try to push a menu state so history stays consistent
     window.history.pushState({ index: null }, document.title)
@@ -63,7 +65,18 @@ export function goToMenu() {
   }
 
   // Reset application navigation state to menu
+  actionBarOpen.set(false)
   currentIndex.set(null)
   mode.set('mode-lecture')
   previewMode.set(false)
+  showAbout.set(about)
+}
+
+export function closeAbout() {
+  showAbout.set(false)
+  if (window.history.length > 1) {
+    window.history.back()
+  } else {
+    goToMenu()
+  }
 }
