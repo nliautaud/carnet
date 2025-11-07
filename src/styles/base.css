@@ -9,7 +9,7 @@
   --text-muted-color: #666;
   --border-color: #ccc;
   --hover-bg: rgba(80, 100, 255, 0.05);
-  --panel-bg: rgb(231, 232, 248);
+  --panel-bg: rgb(212, 220, 232);
 
   /* Dark mode */
   --dark-app-bg-color: linear-gradient(135deg, #1f1f1f 0%, #121212 100%);
