@@ -14,6 +14,7 @@
       sharedTexts,
       texts,
       theme,
+      menuFirstLoad,
   } from "./stores/appStore.js";
 
   import TextMenu from "./components/MenuView/Menu.svelte";
@@ -114,10 +115,8 @@
     window.history.replaceState({}, document.title, url.pathname + url.search);
   }
 
-  let menuFirstAppearance = false;
-
   function setupHistoryNavigation() {
-    let previousIndex = null;
+    let previousIndex = $currentIndex;
 
     // Handle browser back button
     const handlePopState = (event) => {
@@ -138,9 +137,7 @@
         window.history.pushState({ textView: true }, document.title);
       }
       // Detect first menu show (when index goes from non-null to null)
-      if (index === null && previousIndex !== null && !menuFirstAppearance) {
-        menuFirstAppearance = true;
-      }
+      menuFirstLoad.set(index === null && previousIndex === null && $menuFirstLoad);
       previousIndex = index;
     });
 
@@ -152,7 +149,7 @@
   }
 </script>
 
-<main class={menuFirstAppearance ? "animate" : ""}>
+<main class={$menuFirstLoad ? "animate" : ""}>
   {#if ($previewMode && $sharedTexts.length) || $currentIndex !== null}
     <TextEditor />
   {:else}
