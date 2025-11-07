@@ -14,7 +14,7 @@
   }
 </script>
 
-<div class="action-header" class:actionbar-visible={$actionBarOpen}>
+<div class="action-header">
   <div class="action-bar-container" class:visible={$actionBarOpen}>
     <OutsideDismissable
       open={$actionBarOpen}
@@ -44,7 +44,9 @@
 
 <style>
   .action-header {
-    position: relative;
+    position: sticky;
+    top: 1em;
+    z-index: 100;
     padding: 0.5em 0 0;
     display: flex;
     justify-content: end;
@@ -68,7 +70,7 @@
 
   .action-bar-container {
     position: absolute;
-    top: 1.5em;
+    top: .5em;
     left: 50%;
     transform: translateX(-50%);
     opacity: 0;
@@ -80,13 +82,5 @@
   .action-bar-container.visible {
     opacity: 1;
     pointer-events: auto;
-  }
-
-  /* action bar sticky */
-  .action-header.actionbar-visible {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    border-radius: 1em 1em 0 0;
   }
 </style>
