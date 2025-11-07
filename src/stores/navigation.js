@@ -60,6 +60,10 @@ export function goToMenu(about = false) {
   }
 
   currentIndex.set(null)
+  if (about) {
+    menuFirstLoad.set(false)
+    showAbout.set(true)
+  }
   cleanState()
 }
 
@@ -67,7 +71,6 @@ function cleanState() {
   mode.set('mode-lecture')
   actionBarOpen.set(false)
   previewMode.set(false)
-  showAbout.set(false)
   appearancePanelOpen.set(false)
 }
 

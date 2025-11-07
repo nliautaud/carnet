@@ -143,8 +143,11 @@
     margin: 2em 0 0 0;
     letter-spacing: 4px;
   }
-  :global(.animate) h1 span {
+  h1 span {
     display: inline-block;
+    transform: translateY(calc(var(--amp) / -10));
+  }
+  :global(.animate) h1 span {
     animation: appear 0.5s cubic-bezier(0.47, 1.64, 0.41, 0.8);
     animation-fill-mode: both;
   }
